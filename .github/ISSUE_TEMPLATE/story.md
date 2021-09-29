@@ -8,14 +8,14 @@ assignees: ''
 ---
 
 **As a** [Role]
-** I need** [Action]
+**I need** [Action]
 **So that** [benefit]
 
-**Asumptions:**
+**Assumptions:**
 * ...
 
 **Acceptance Criteria:**
-```
+```gherkin
 Given ...
 When ...
 Then ...
