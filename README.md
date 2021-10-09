@@ -1,4 +1,4 @@
-# lab-flask-tdd
+# Wishlist Microservice
 
 [![Build Status](https://travis-ci.org/nyu-devops/lab-flask-tdd.svg?branch=master)](https://travis-ci.org/nyu-devops/lab-flask-tdd)
 [![Codecov](https://codecov.io/gh/nyu-devops/lab-flask-tdd/branch/master/graph/badge.svg)](https://codecov.io/gh/nyu-devops/lab-flask-tdd/branch/master/graph/badge.svg)
