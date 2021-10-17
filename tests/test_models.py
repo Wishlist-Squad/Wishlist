@@ -1,51 +1,56 @@
 """
-Test cases for Wishlist Class
+This code is adapted from Prof. Rofrano 's Pet model test code
+"""
 
+"""
+Test cases for Wishlist Model
 Test cases can be run with:
     nosetests
     coverage report -m
-
 While debugging just these tests it's convinient to use this:
-    nosetests --stop tests/test_pets.py:TestPetModel
-
+    nosetests --stop tests/test_models.py:TestWishlistModel
 """
 import os
 import logging
 import unittest
 from werkzeug.exceptions import NotFound
-from service.wishlist import Wishlist
+from service.models import Wishlist, DataValidationError, db
 from service import app
 from .factories import WishlistFactory
 
+DATABASE_URI = os.getenv(
+    "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
+)
+
 ######################################################################
-#  Wishlist   CLASS   T E S T   C A S E S
+#  Wishlist   M O D E L   T E S T   C A S E S
 ######################################################################
 class TestWishlistModel(unittest.TestCase):
-    """Test Cases for Wishlist Class"""
+    """Test Cases for Wishlist Model"""
 
-    # @classmethod
-    # def setUpClass(cls):
-    #     """This runs once before the entire test suite"""
-    #     app.config["TESTING"] = True
-    #     app.config["DEBUG"] = False
-    #     app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
-    #     app.logger.setLevel(logging.CRITICAL)
-    #     Pet.init_db(app)
-    #
-    # @classmethod
-    # def tearDownClass(cls):
-    #     """This runs once after the entire test suite"""
-    #     db.session.close()
-    #
-    # def setUp(self):
-    #     """This runs before each test"""
-    #     db.drop_all()  # clean up the last tests
-    #     db.create_all()  # make our sqlalchemy tables
-    #
-    # def tearDown(self):
-    #     """This runs after each test"""
-    #     db.session.remove()
-    #     db.drop_all()
+    @classmethod
+    def setUpClass(cls):
+        """This runs once before the entire test suite"""
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.logger.setLevel(logging.CRITICAL)
+        Wishlist.init_db(app)
+
+    @classmethod
+    def tearDownClass(cls):
+        """This runs once after the entire test suite"""
+        db.session.close()
+
+    def setUp(self):
+        """This runs before each test"""
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # make our sqlalchemy tables
+
+    def tearDown(self):
+        """This runs after each test"""
+        db.session.remove()
+        db.drop_all()
 
     ######################################################################
     #  T E S T   C A S E S
@@ -53,46 +58,65 @@ class TestWishlistModel(unittest.TestCase):
 
     def test_create_a_wishlist(self):
         """Create a wishlist and assert that it exists"""
-        pet = Wishlist(name="test",customer=123456)
-        self.assertTrue(pet != None)
-        self.assertEqual(pet.get_name(), "test")
-        self.assertEqual(pet.get_customer(), 123456)
+        wishlist = Wishlist(name="fido", customer="1234", products="T-shirt;table")
+        self.assertTrue(wishlist != None)
+        self.assertEqual(wishlist.name, "fido")
+        self.assertEqual(wishlist.customer, "1234")
+        self.assertEqual(wishlist.products, "T-shirt;table")
+
+    def test_add_a_wishlist(self):
+        """Create a wishlist and add it to the database"""
+        wishlists = Wishlist.all()
+        self.assertEqual(wishlists, [])
+        wishlist = Wishlist(name="fido", customer="1234", products="T-shirt;table")
+        self.assertTrue(wishlist != None)
+        wishlist.create()
+        wishlists = Wishlist.all()
+        self.assertEqual(len(wishlists), 1)
 
     def test_update_a_wishlist(self):
-        """Update a Wishlist"""
-        wishlist = Wishlist("test",123456)
-        wishlist.update_name("abcd")
-        self.assertEqual(wishlist.get_name(),"abcd")
-        wishlist.update_customer(654321)
-        self.assertEqual(wishlist.get_customer(),654321)
+        """Update a wishlist"""
+        wishlist = WishlistFactory()
+        logging.debug(wishlist)
+        wishlist.create()
+        logging.debug(wishlist)
+        # Change it an save it
+        wishlist.name = "k9"
+        wishlist.update()
+        self.assertEqual(wishlist.name, "k9")
+        # Fetch it back and make sure the id hasn't changed
+        # but the data did change
+        wishlists = Wishlist.all()
+        self.assertEqual(len(wishlists), 1)
+        self.assertEqual(wishlists[0].name, "k9")
 
-    # def test_delete_a_pet(self):
-    #     """Delete a Pet"""
-    #     pet = PetFactory()
-    #     pet.create()
-    #     self.assertEqual(len(Pet.all()), 1)
-    #     # delete the pet and make sure it isn't in the database
-    #     pet.delete()
-    #     self.assertEqual(len(Pet.all()), 0)
-    #
-    # def test_serialize_a_pet(self):
-    #     """Test serialization of a Pet"""
-    #     pet = PetFactory()
-    #     data = pet.serialize()
+    def test_delete_a_wishlist(self):
+        """Delete a wishlist"""
+        wishlist = WishlistFactory()
+        wishlist.create()
+        self.assertEqual(len(wishlist.all()), 1)
+        # delete the wishlist and make sure it isn't in the database
+        wishlist.delete()
+        self.assertEqual(len(wishlist.all()), 0)
+
+    # def test_serialize_a_wishlist(self):
+    #     """Test serialization of a wishlist"""
+    #     wishlist = WishlistFactory()
+    #     data = wishlist.serialize()
     #     self.assertNotEqual(data, None)
     #     self.assertIn("id", data)
-    #     self.assertEqual(data["id"], pet.id)
+    #     self.assertEqual(data["id"], wishlist.id)
     #     self.assertIn("name", data)
-    #     self.assertEqual(data["name"], pet.name)
+    #     self.assertEqual(data["name"], wishlist.name)
     #     self.assertIn("category", data)
-    #     self.assertEqual(data["category"], pet.category)
+    #     self.assertEqual(data["category"], wishlist.category)
     #     self.assertIn("available", data)
-    #     self.assertEqual(data["available"], pet.available)
+    #     self.assertEqual(data["available"], wishlist.available)
     #     self.assertIn("gender", data)
-    #     self.assertEqual(data["gender"], pet.gender.name)
-    #
-    # def test_deserialize_a_pet(self):
-    #     """Test deserialization of a Pet"""
+    #     self.assertEqual(data["gender"], wishlist.gender.name)
+
+    # def test_deserialize_a_wishlist(self):
+    #     """Test deserialization of a wishlist"""
     #     data = {
     #         "id": 1,
     #         "name": "kitty",
@@ -100,118 +124,69 @@ class TestWishlistModel(unittest.TestCase):
     #         "available": True,
     #         "gender": "Female",
     #     }
-    #     pet = Pet()
-    #     pet.deserialize(data)
-    #     self.assertNotEqual(pet, None)
-    #     self.assertEqual(pet.id, None)
-    #     self.assertEqual(pet.name, "kitty")
-    #     self.assertEqual(pet.category, "cat")
-    #     self.assertEqual(pet.available, True)
-    #     self.assertEqual(pet.gender, Gender.Female)
+    #     wishlist = wishlist()
+    #     wishlist.deserialize(data)
+    #     self.assertNotEqual(wishlist, None)
+    #     self.assertEqual(wishlist.id, None)
+    #     self.assertEqual(wishlist.name, "kitty")
+    #     self.assertEqual(wishlist.category, "cat")
+    #     self.assertEqual(wishlist.available, True)
+    #     self.assertEqual(wishlist.gender, Gender.Female)
     #
     # def test_deserialize_missing_data(self):
-    #     """Test deserialization of a Pet with missing data"""
+    #     """Test deserialization of a wishlist with missing data"""
     #     data = {"id": 1, "name": "kitty", "category": "cat"}
-    #     pet = Pet()
-    #     self.assertRaises(DataValidationError, pet.deserialize, data)
+    #     wishlist = wishlist()
+    #     self.assertRaises(DataValidationError, wishlist.deserialize, data)
     #
     # def test_deserialize_bad_data(self):
     #     """Test deserialization of bad data"""
     #     data = "this is not a dictionary"
-    #     pet = Pet()
-    #     self.assertRaises(DataValidationError, pet.deserialize, data)
+    #     wishlist = wishlist()
+    #     self.assertRaises(DataValidationError, wishlist.deserialize, data)
     #
     # def test_deserialize_bad_available(self):
     #     """ Test deserialization of bad available attribute """
-    #     test_pet = PetFactory()
-    #     data = test_pet.serialize()
+    #     test_wishlist = WishlistFactory()
+    #     data = test_wishlist.serialize()
     #     data["available"] = "true"
-    #     pet = Pet()
-    #     self.assertRaises(DataValidationError, pet.deserialize, data)
+    #     wishlist = wishlist()
+    #     self.assertRaises(DataValidationError, wishlist.deserialize, data)
     #
     # def test_deserialize_bad_gender(self):
     #     """ Test deserialization of bad gender attribute """
-    #     test_pet = PetFactory()
-    #     data = test_pet.serialize()
+    #     test_wishlist = WishlistFactory()
+    #     data = test_wishlist.serialize()
     #     data["gender"] = "male" # wrong case
-    #     pet = Pet()
-    #     self.assertRaises(DataValidationError, pet.deserialize, data)
-    #
-    # def test_find_pet(self):
-    #     """Find a Pet by ID"""
-    #     pets = PetFactory.create_batch(3)
-    #     for pet in pets:
-    #         pet.create()
-    #     logging.debug(pets)
-    #     # make sure they got saved
-    #     self.assertEqual(len(Pet.all()), 3)
-    #     # find the 2nd pet in the list
-    #     pet = Pet.find(pets[1].id)
-    #     self.assertIsNot(pet, None)
-    #     self.assertEqual(pet.id, pets[1].id)
-    #     self.assertEqual(pet.name, pets[1].name)
-    #     self.assertEqual(pet.available, pets[1].available)
-    #
-    # def test_find_by_category(self):
-    #     """Find Pets by Category"""
-    #     Pet(name="fido", category="dog", available=True).create()
-    #     Pet(name="kitty", category="cat", available=False).create()
-    #     pets = Pet.find_by_category("cat")
-    #     self.assertEqual(pets[0].category, "cat")
-    #     self.assertEqual(pets[0].name, "kitty")
-    #     self.assertEqual(pets[0].available, False)
-    #
-    # def test_find_by_name(self):
-    #     """Find a Pet by Name"""
-    #     Pet(name="fido", category="dog", available=True).create()
-    #     Pet(name="kitty", category="cat", available=False).create()
-    #     pets = Pet.find_by_name("kitty")
-    #     self.assertEqual(pets[0].category, "cat")
-    #     self.assertEqual(pets[0].name, "kitty")
-    #     self.assertEqual(pets[0].available, False)
-    #
-    # def test_find_by_availability(self):
-    #     """Find Pets by Availability"""
-    #     Pet(name="fido", category="dog", available=True).create()
-    #     Pet(name="kitty", category="cat", available=False).create()
-    #     Pet(name="fifi", category="dog", available=True).create()
-    #     pets = Pet.find_by_availability(False)
-    #     pet_list = [pet for pet in pets]
-    #     self.assertEqual(len(pet_list), 1)
-    #     self.assertEqual(pets[0].name, "kitty")
-    #     self.assertEqual(pets[0].category, "cat")
-    #     pets = Pet.find_by_availability(True)
-    #     pet_list = [pet for pet in pets]
-    #     self.assertEqual(len(pet_list), 2)
-    #
-    # def test_find_by_gender(self):
-    #     """Find Pets by Gender"""
-    #     Pet(name="fido", category="dog", available=True, gender=Gender.Male).create()
-    #     Pet(
-    #         name="kitty", category="cat", available=False, gender=Gender.Female
-    #     ).create()
-    #     Pet(name="fifi", category="dog", available=True, gender=Gender.Male).create()
-    #     pets = Pet.find_by_gender(Gender.Female)
-    #     pet_list = [pet for pet in pets]
-    #     self.assertEqual(len(pet_list), 1)
-    #     self.assertEqual(pets[0].name, "kitty")
-    #     self.assertEqual(pets[0].category, "cat")
-    #     pets = Pet.find_by_gender(Gender.Male)
-    #     pet_list = [pet for pet in pets]
-    #     self.assertEqual(len(pet_list), 2)
-    #
-    # def test_find_or_404_found(self):
-    #     """Find or return 404 found"""
-    #     pets = PetFactory.create_batch(3)
-    #     for pet in pets:
-    #         pet.create()
-    #
-    #     pet = Pet.find_or_404(pets[1].id)
-    #     self.assertIsNot(pet, None)
-    #     self.assertEqual(pet.id, pets[1].id)
-    #     self.assertEqual(pet.name, pets[1].name)
-    #     self.assertEqual(pet.available, pets[1].available)
-    #
-    # def test_find_or_404_not_found(self):
-    #     """Find or return 404 NOT found"""
-    #     self.assertRaises(NotFound, Pet.find_or_404, 0)
+    #     wishlist = wishlist()
+    #     self.assertRaises(DataValidationError, wishlist.deserialize, data)
+
+    def test_find_wishlist(self):
+        """Find a wishlist by name and customer"""
+        wishlists = WishlistFactory.create_batch(3)
+        for wishlist in wishlists:
+            wishlist.create()
+        logging.debug(wishlists)
+        # make sure they got saved
+        self.assertEqual(len(wishlist.all()), 3)
+        # find the 2nd wishlist in the list
+        wishlist = Wishlist.find(wishlists[1].name,wishlists[1].customer)
+        self.assertIsNot(wishlist, None)
+        self.assertEqual(wishlist.name, wishlists[1].name)
+        self.assertEqual(wishlist.customer, wishlists[1].customer)
+
+    def test_find_by_customer(self):
+        """Find wishlists by Category"""
+        Wishlist(name="fido", customer="1234").create()
+        Wishlist(name="kitty", customer="4321").create()
+        wishlists = Wishlist.find_by_customer("1234")
+        self.assertEqual(wishlists[0].customer, "1234")
+        self.assertEqual(wishlists[0].name, "fido")
+
+    def test_find_by_name(self):
+        """Find a wishlist by Name"""
+        Wishlist(name="fido", customer="1234").create()
+        Wishlist(name="kitty", customer="4321").create()
+        wishlists = Wishlist.find_by_name("kitty")
+        self.assertEqual(wishlists[0].name, "kitty")
+        self.assertEqual(wishlists[0].customer, "4321")
