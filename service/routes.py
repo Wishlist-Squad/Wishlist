@@ -34,7 +34,7 @@ from werkzeug.exceptions import NotFound
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Pet, DataValidationError
+from service.models import Wishlist, DataValidationError
 
 # Import Flask application
 from . import app
@@ -42,124 +42,124 @@ from . import app
 ######################################################################
 # GET INDEX
 ######################################################################
-@app.route("/")
-def index():
-    """Root URL response"""
-    app.logger.info("Request for Root URL")
-    return (
-        jsonify(
-            name="Pet Demo REST API Service",
-            version="1.0",
-            paths=url_for("list_pets", _external=True),
-        ),
-        status.HTTP_200_OK,
-    )
+# @app.route("/")
+# def index():
+#     """Root URL response"""
+#     app.logger.info("Request for Root URL")
+#     return (
+#         jsonify(
+#             name="Pet Demo REST API Service",
+#             version="1.0",
+#             paths=url_for("list_pets", _external=True),
+#         ),
+#         status.HTTP_200_OK,
+#     )
 
 
 ######################################################################
 # LIST ALL PETS
 ######################################################################
-@app.route("/pets", methods=["GET"])
-def list_pets():
-    """Returns all of the Pets"""
-    app.logger.info("Request for pet list")
-    pets = []
-    category = request.args.get("category")
-    name = request.args.get("name")
-    if category:
-        pets = Pet.find_by_category(category)
-    elif name:
-        pets = Pet.find_by_name(name)
-    else:
-        pets = Pet.all()
+# @app.route("/pets", methods=["GET"])
+# def list_pets():
+#     """Returns all of the Pets"""
+#     app.logger.info("Request for pet list")
+#     pets = []
+#     category = request.args.get("category")
+#     name = request.args.get("name")
+#     if category:
+#         pets = Pet.find_by_category(category)
+#     elif name:
+#         pets = Pet.find_by_name(name)
+#     else:
+#         pets = Pet.all()
 
-    results = [pet.serialize() for pet in pets]
-    app.logger.info("Returning %d pets", len(results))
-    return make_response(jsonify(results), status.HTTP_200_OK)
+#     results = [pet.serialize() for pet in pets]
+#     app.logger.info("Returning %d pets", len(results))
+#     return make_response(jsonify(results), status.HTTP_200_OK)
 
 
 ######################################################################
 # RETRIEVE A PET
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["GET"])
-def get_pets(pet_id):
-    """
-    Retrieve a single Pet
+# @app.route("/pets/<int:pet_id>", methods=["GET"])
+# def get_pets(pet_id):
+#     """
+#     Retrieve a single Pet
 
-    This endpoint will return a Pet based on it's id
-    """
-    app.logger.info("Request for pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
+#     This endpoint will return a Pet based on it's id
+#     """
+#     app.logger.info("Request for pet with id: %s", pet_id)
+#     pet = Pet.find(pet_id)
+#     if not pet:
+#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
 
-    app.logger.info("Returning pet: %s", pet.name)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+#     app.logger.info("Returning pet: %s", pet.name)
+#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
 # ADD A NEW PET
 ######################################################################
-@app.route("/pets", methods=["POST"])
-def create_pets():
-    """
-    Creates a Pet
-    This endpoint will create a Pet based the data in the body that is posted
-    """
-    app.logger.info("Request to create a pet")
-    check_content_type("application/json")
-    pet = Pet()
-    pet.deserialize(request.get_json())
-    pet.create()
-    message = pet.serialize()
-    location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+# @app.route("/pets", methods=["POST"])
+# def create_pets():
+#     """
+#     Creates a Pet
+#     This endpoint will create a Pet based the data in the body that is posted
+#     """
+#     app.logger.info("Request to create a pet")
+#     check_content_type("application/json")
+#     pet = Pet()
+#     pet.deserialize(request.get_json())
+#     pet.create()
+#     message = pet.serialize()
+#     location_url = url_for("get_pets", pet_id=pet.id, _external=True)
 
-    app.logger.info("Pet with ID [%s] created.", pet.id)
-    return make_response(
-        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-    )
+#     app.logger.info("Pet with ID [%s] created.", pet.id)
+#     return make_response(
+#         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+#     )
 
 
 ######################################################################
 # UPDATE AN EXISTING PET
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["PUT"])
-def update_pets(pet_id):
-    """
-    Update a Pet
+# @app.route("/pets/<int:pet_id>", methods=["PUT"])
+# def update_pets(pet_id):
+#     """
+#     Update a Pet
 
-    This endpoint will update a Pet based the body that is posted
-    """
-    app.logger.info("Request to update pet with id: %s", pet_id)
-    check_content_type("application/json")
-    pet = Pet.find(pet_id)
-    if not pet:
-        raise NotFound("Pet with id '{}' was not found.".format(pet_id))
-    pet.deserialize(request.get_json())
-    pet.id = pet_id
-    pet.update()
+#     This endpoint will update a Pet based the body that is posted
+#     """
+#     app.logger.info("Request to update pet with id: %s", pet_id)
+#     check_content_type("application/json")
+#     pet = Pet.find(pet_id)
+#     if not pet:
+#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
+#     pet.deserialize(request.get_json())
+#     pet.id = pet_id
+#     pet.update()
 
-    app.logger.info("Pet with ID [%s] updated.", pet.id)
-    return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+#     app.logger.info("Pet with ID [%s] updated.", pet.id)
+#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
 # DELETE A PET
 ######################################################################
-@app.route("/pets/<int:pet_id>", methods=["DELETE"])
-def delete_pets(pet_id):
-    """
-    Delete a Pet
+# @app.route("/pets/<int:pet_id>", methods=["DELETE"])
+# def delete_pets(pet_id):
+#     """
+#     Delete a Pet
 
-    This endpoint will delete a Pet based the id specified in the path
-    """
-    app.logger.info("Request to delete pet with id: %s", pet_id)
-    pet = Pet.find(pet_id)
-    if pet:
-        pet.delete()
+#     This endpoint will delete a Pet based the id specified in the path
+#     """
+#     app.logger.info("Request to delete pet with id: %s", pet_id)
+#     pet = Pet.find(pet_id)
+#     if pet:
+#         pet.delete()
 
-    app.logger.info("Pet with ID [%s] delete complete.", pet_id)
-    return make_response("", status.HTTP_204_NO_CONTENT)
+#     app.logger.info("Pet with ID [%s] delete complete.", pet_id)
+#     return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################
