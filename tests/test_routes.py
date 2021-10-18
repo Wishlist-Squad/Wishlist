@@ -136,50 +136,50 @@ class TestWishlistsServer(unittest.TestCase):
           BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
       )
       self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-      # # Make sure location header is set
-      # location = resp.headers.get("Location", None)
-      # self.assertIsNotNone(location)
-      # # Check the data is correct
-      # new_wishlist = resp.get_json()
-      # self.assertEqual(new_wishlist["name"], new_wishlist.name, "Names do not match")
-      # self.assertEqual(
-      #     new_wishlist["customer_id"], new_wishlist.customer_id, "customer_id do not match"
-      # )
-      # self.assertEqual(
-      #     new_wishlist["products"], new_wishlist.products, "products does not match"
-      # )
+      # Make sure location header is set
+      location = resp.headers.get("Location", None)
+      self.assertIsNotNone(location)
+      # Check the data is correct
+      new_wishlist = resp.get_json()
+      self.assertEqual(new_wishlist["name"], test_wishlist.name, "Names do not match")
+      self.assertEqual(
+          new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
+      )
+      self.assertEqual(
+          new_wishlist["products"], test_wishlist.products, "products does not match"
+      )
       # # Check that the location header was correct
       # resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
       # self.assertEqual(resp.status_code, status.HTTP_200_OK)
       # new_wishlist = resp.get_json()
-      # nosetestsself.assertEqual(new_wishlist["name"], new_wishlist.name, "Names do not match")
+      # nosetestsself.assertEqual(new_wishlist["name"], test_wishlist.name, "Names do not match")
       # self.assertEqual(
-      #     new_wishlist["customer_id"], new_wishlist.customer_id, "customer_id do not match"
+      #     new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
       # )
       # self.assertEqual(
-      #     new_wishlist["products"], new_wishlist.products, "products does not match"
+      #     new_wishlist["products"], test_wishlist.products, "products does not match"
       # )
 
-    def test_create_pet_no_data(self):
+    def test_create_wishlist_no_data(self):
         """Create a wishlist with missing data"""
         resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-# def test_create_pet_no_content_type(self):
-#     """Create a Pet with no content type"""
-#     resp = self.app.post(BASE_URL)
-#     self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+    def test_create_pet_no_content_type(self):
+        """Create a Pet with no content type"""
+        resp = self.app.post(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
-# def test_create_pet_bad_available(self):
-#     """ Create a Pet with bad available data """
-#     test_pet = PetFactory()
-#     logging.debug(test_pet)
-#     # change available to a string
-#     test_pet.available = "true"
-#     resp = self.app.post(
-#         BASE_URL, json=test_pet.serialize(), content_type="application/json"
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    # def test_create_wishlist_bad_customer_id (self):
+    #     """ Create a Pet with bad available data """
+    #     test_wishlist = WishlistFactory()
+    #     logging.debug(test_wishlist)
+    #     # change available to a string
+    #     test_wishlist.customer_id = "bad"
+    #     resp = self.app.post(
+    #         BASE_URL, json=test_wishlist.serialize(), content_type="application/json"
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
 # def test_create_pet_bad_gender(self):
 #     """ Create a Pet with bad available data """
