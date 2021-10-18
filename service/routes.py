@@ -115,7 +115,7 @@ def create_wishlists():
     wishlist.create()
     message = wishlist.serialize()
     location_url = url_for(
-        "create_wishlists", wishlist_id=wishlist.id, _external=True)
+        "get_wishlists", wishlist_id=wishlist.id, _external=True)
 
     app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
     return make_response(

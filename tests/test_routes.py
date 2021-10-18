@@ -159,17 +159,17 @@ class TestWishlistsServer(unittest.TestCase):
             new_wishlist["products"], test_wishlist.products, "products does not match"
         )
         # Check that the location header was correct
-        # resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
-        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        # new_wishlist = resp.get_json()
-        # self.assertEqual(new_wishlist["name"],
-        #                  test_wishlist.name, "Names do not match")
-        # self.assertEqual(
-        #     new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
-        # )
-        # self.assertEqual(
-        #     new_wishlist["products"], test_wishlist.products, "products does not match"
-        # )
+        resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        new_wishlist = resp.get_json()
+        self.assertEqual(new_wishlist["name"],
+                         test_wishlist.name, "Names do not match")
+        self.assertEqual(
+            new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
+        )
+        self.assertEqual(
+            new_wishlist["products"], test_wishlist.products, "products does not match"
+        )
 
     def test_create_wishlist_no_data(self):
         """Create a wishlist with missing data"""
