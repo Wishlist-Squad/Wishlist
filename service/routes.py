@@ -79,22 +79,23 @@ def index():
 
 
 ######################################################################
-# RETRIEVE A PET
+# RETRIEVE A WISHLIST
 ######################################################################
-# @app.route("/pets/<int:pet_id>", methods=["GET"])
-# def get_pets(pet_id):
-#     """
-#     Retrieve a single Pet
+@app.route("/wishlists/<int:wishlist_id>", methods=["GET"])
+def get_wishlists(wishlist_id):
+    """
+    Retrieve a single Wishlist
 
-#     This endpoint will return a Pet based on it's id
-#     """
-#     app.logger.info("Request for pet with id: %s", pet_id)
-#     pet = Pet.find(pet_id)
-#     if not pet:
-#         raise NotFound("Pet with id '{}' was not found.".format(pet_id))
+    This endpoint will return a Wishlist based on it's id
+    """
+    app.logger.info("Request for wishlist with id: %s", wishlist_id)
+    wishlist = Wishlist.find(wishlist_id)
+    if not wishlist:
+        raise NotFound(
+            "Wishlist with id '{}' was not found.".format(wishlist_id))
 
-#     app.logger.info("Returning pet: %s", pet.name)
-#     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
+    app.logger.info("Returning wishlist: %s", wishlist.name)
+    return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
 
 
 ######################################################################
@@ -114,7 +115,7 @@ def create_wishlists():
     wishlist.create()
     message = wishlist.serialize()
     location_url = url_for(
-        "create_wishlists", wishlist_id=wishlist.id, _external=True)
+        "get_wishlists", wishlist_id=wishlist.id, _external=True)
 
     app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
     return make_response(
