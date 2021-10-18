@@ -59,23 +59,23 @@ def index():
 ######################################################################
 # LIST ALL PETS
 ######################################################################
-# @app.route("/pets", methods=["GET"])
-# def list_pets():
-#     """Returns all of the Pets"""
-#     app.logger.info("Request for pet list")
-#     pets = []
-#     category = request.args.get("category")
-#     name = request.args.get("name")
-#     if category:
-#         pets = Pet.find_by_category(category)
-#     elif name:
-#         pets = Pet.find_by_name(name)
-#     else:
-#         pets = Pet.all()
+@app.route("/wishlists", methods=["GET"])
+def list_wishlists():
+    """Returns all of the Pets"""
+    app.logger.info("Request for wishlists list")
+    wishlists = []
+    # customer_id = request.args.get("customer_id")
+    # name = request.args.get("name")
+    # if category:
+    #     pets = Pet.find_by_category(category)
+    # elif name:
+    #     pets = Pet.find_by_name(name)
+    # else:
+    wishlists = Wishlist.all()
 
-#     results = [pet.serialize() for pet in pets]
-#     app.logger.info("Returning %d pets", len(results))
-#     return make_response(jsonify(results), status.HTTP_200_OK)
+    results = [wishlist.serialize() for wishlist in wishlists]
+    app.logger.info("Returning %d wishlists", len(results))
+    return make_response(jsonify(results), status.HTTP_200_OK)
 
 
 ######################################################################
@@ -113,6 +113,7 @@ def create_wishlists():
 
     wishlist.create()
     message = wishlist.serialize()
+    
     location_url = url_for("create_wishlists", wishlist_id=wishlist.id, _external=True)
 
     app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
@@ -147,20 +148,20 @@ def create_wishlists():
 ######################################################################
 # DELETE A PET
 ######################################################################
-# @app.route("/pets/<int:pet_id>", methods=["DELETE"])
-# def delete_pets(pet_id):
-#     """
-#     Delete a Pet
+@app.route("/wishlists/<int:wishlist_id>", methods=["DELETE"])
+def delete_pets(wishlist_id):
+    """
+    Delete a Pet
 
-#     This endpoint will delete a Pet based the id specified in the path
-#     """
-#     app.logger.info("Request to delete pet with id: %s", pet_id)
-#     pet = Pet.find(pet_id)
-#     if pet:
-#         pet.delete()
+    This endpoint will delete a Pet based the id specified in the path
+    """
+    app.logger.info("Request to delete pet with id: %s", wishlist_id)
+    wishlist = Wishlist.find(wishlist_id)
+    if wishlist:
+        wishlist.delete()
 
-#     app.logger.info("Pet with ID [%s] delete complete.", pet_id)
-#     return make_response("", status.HTTP_204_NO_CONTENT)
+    app.logger.info("Wishlist with ID [%s] delete complete.", wishlist_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################
