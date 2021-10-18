@@ -64,7 +64,7 @@ def list_wishlists():
     """Returns all of the Pets"""
     app.logger.info("Request for wishlists list")
     wishlists = []
-    # customer_id = request.args.get("customer_id")
+    customer_id = request.args.get("customer_id")
     # name = request.args.get("name")
     # if category:
     #     pets = Pet.find_by_category(category)
@@ -72,7 +72,6 @@ def list_wishlists():
     #     pets = Pet.find_by_name(name)
     # else:
     wishlists = Wishlist.all()
-
     results = [wishlist.serialize() for wishlist in wishlists]
     app.logger.info("Returning %d wishlists", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
@@ -120,7 +119,6 @@ def create_wishlists():
     return make_response(
         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
     )
-
 
 ######################################################################
 # UPDATE AN EXISTING PET

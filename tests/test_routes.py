@@ -215,14 +215,14 @@ class TestWishlistsServer(unittest.TestCase):
 #     updated_pet = resp.get_json()
 #     self.assertEqual(updated_pet["category"], "unknown")
 
-    def test_delete_wishlist(self):
-        """Delete a Wishlist"""
-        test_wishlist = self._create_wishlists(1)[0]
-        resp = self.app.delete(
-            "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
-        )
-        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-        self.assertEqual(len(resp.data), 0)
+    # def test_delete_wishlist(self):
+    #     """Delete a Wishlist"""
+    #     test_wishlist = self._create_wishlists(1)[0]
+    #     resp = self.app.delete(
+    #         "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+    #     self.assertEqual(len(resp.data), 0)
         # # make sure they are deleted
         # resp = self.app.get(
         #     "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
