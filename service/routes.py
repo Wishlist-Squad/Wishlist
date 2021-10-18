@@ -13,15 +13,15 @@
 # limitations under the License.
 
 """
-Pet Store Service
+Wishlist Service
 
 Paths:
 ------
-GET /pets - Returns a list all of the Pets
-GET /pets/{id} - Returns the Pet with a given id number
-POST /pets - creates a new Pet record in the database
-PUT /pets/{id} - updates a Pet record in the database
-DELETE /pets/{id} - deletes a Pet record in the database
+GET /wishlists - Returns a list all of the Wishlists
+GET /wishlists/{id} - Returns the wishlists with a given id number
+POST /wishlists - creates a new wishlists record in the database
+PUT /wishlists/{id} - updates a wishlists record in the database
+DELETE /wishlists/{id} - deletes a wishlists record in the database
 """
 
 import os
@@ -42,18 +42,18 @@ from . import app
 ######################################################################
 # GET INDEX
 ######################################################################
-# @app.route("/")
-# def index():
-#     """Root URL response"""
-#     app.logger.info("Request for Root URL")
-#     return (
-#         jsonify(
-#             name="Pet Demo REST API Service",
-#             version="1.0",
-#             paths=url_for("list_pets", _external=True),
-#         ),
-#         status.HTTP_200_OK,
-#     )
+@app.route("/")
+def index():
+    """Root URL response"""
+    app.logger.info("Request for Root URL")
+    return (
+        jsonify(
+            name="Wishlist Demo REST API Service",
+            version="1.0",
+            paths=url_for("create_wishlists", _external=True),
+        ),
+        status.HTTP_200_OK,
+    )
 
 
 ######################################################################
@@ -98,26 +98,28 @@ from . import app
 
 
 ######################################################################
-# ADD A NEW PET
+# ADD A NEW WISHLIST
 ######################################################################
-# @app.route("/pets", methods=["POST"])
-# def create_pets():
-#     """
-#     Creates a Pet
-#     This endpoint will create a Pet based the data in the body that is posted
-#     """
-#     app.logger.info("Request to create a pet")
-#     check_content_type("application/json")
-#     pet = Pet()
-#     pet.deserialize(request.get_json())
-#     pet.create()
-#     message = pet.serialize()
-#     location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+@app.route("/wishlists", methods=["POST"])
+def create_wishlists():
+    """
+    Creates a wishlist
+    This endpoint will create a Pet based the data in the body that is posted
+    """
+    app.logger.info("Request to create a wishlist")
+    check_content_type("application/json")
+    wishlist = Wishlist()
+    wishlist.deserialize(request.get_json())
 
-#     app.logger.info("Pet with ID [%s] created.", pet.id)
-#     return make_response(
-#         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-#     )
+    wishlist.create()
+    message = wishlist.serialize()
+    location_url = url_for(
+        "create_wishlists", wishlist_id=wishlist.id, _external=True)
+
+    app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    )
 
 
 ######################################################################
@@ -159,6 +161,87 @@ from . import app
 #         pet.delete()
 
 #     app.logger.info("Pet with ID [%s] delete complete.", pet_id)
+#     return make_response("", status.HTTP_204_NO_CONTENT)
+
+
+# ---------------------------------------------------------------------
+#                A D D R E S S   M E T H O D S
+# ---------------------------------------------------------------------
+
+
+# ######################################################################
+# # LIST ADDRESSES
+# ######################################################################
+# @app.route("/accounts/<int:account_id>/addresses", methods=["GET"])
+# def list_addresses(account_id):
+#     """ Returns all of the Addresses for an Account """
+#     app.logger.info("Request for Account Addresses...")
+#     account = Account.find_or_404(account_id)
+#     results = [address.serialize() for address in account.addresses]
+#     return make_response(jsonify(results), status.HTTP_200_OK)
+
+# ######################################################################
+# # ADD AN ADDRESS TO AN ACCOUNT
+# ######################################################################
+# @app.route('/accounts/<int:account_id>/addresses', methods=['POST'])
+# def create_addresses(account_id):
+#     """
+#     Create an Address on an Account
+#     This endpoint will add an address to an account
+#     """
+#     app.logger.info("Request to add an address to an account")
+#     check_content_type("application/json")
+#     account = Account.find_or_404(account_id)
+#     address = Address()
+#     address.deserialize(request.get_json())
+#     account.addresses.append(address)
+#     account.save()
+#     message = address.serialize()
+#     return make_response(jsonify(message), status.HTTP_201_CREATED)
+
+# ######################################################################
+# # RETRIEVE AN ADDRESS FROM ACCOUNT
+# ######################################################################
+# @app.route('/accounts/<int:account_id>/addresses/<int:address_id>', methods=['GET'])
+# def get_addresses(account_id, address_id):
+#     """
+#     Get an Address
+#     This endpoint returns just an address
+#     """
+#     app.logger.info("Request to get an address with id: %s", address_id)
+#     address = Address.find_or_404(address_id)
+#     return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+
+# ######################################################################
+# # UPDATE AN ADDRESS
+# ######################################################################
+# @app.route("/accounts/<int:account_id>/addresses/<int:address_id>", methods=["PUT"])
+# def update_addresses(account_id, address_id):
+#     """
+#     Update an Address
+#     This endpoint will update an Address based the body that is posted
+#     """
+#     app.logger.info("Request to update address with id: %s", address_id)
+#     check_content_type("application/json")
+#     address = Address.find_or_404(address_id)
+#     address.deserialize(request.get_json())
+#     address.id = address_id
+#     address.save()
+#     return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+
+# ######################################################################
+# # DELETE AN ADDRESS
+# ######################################################################
+# @app.route("/accounts/<int:account_id>/addresses/<int:address_id>", methods=["DELETE"])
+# def delete_addresses(account_id, address_id):
+#     """
+#     Delete an Address
+#     This endpoint will delete an Address based the id specified in the path
+#     """
+#     app.logger.info("Request to delete account with id: %s", account_id)
+#     address = Address.find(address_id)
+#     if address:
+#         address.delete()
 #     return make_response("", status.HTTP_204_NO_CONTENT)
 
 
