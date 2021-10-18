@@ -65,13 +65,9 @@ class TestWishlistsServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-<<<<<<< HEAD
 ######################################################################
 #  H E L P E R   M E T H O D S
 ######################################################################
-
-=======
->>>>>>> delete_wishlist
     def _create_wishlists(self, count):
         """Factory method to create pets in bulk"""
         wishlists = []
@@ -146,7 +142,9 @@ class TestWishlistsServer(unittest.TestCase):
             new_wishlist["products"], test_wishlist.products, "products does not match"
         )
         # Check that the location header was correct
-        resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        resp = self.app.get(
+            f"{BASE_URL}/{new_wishlist['id']}", content_type=CONTENT_TYPE_JSON
+        )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         new_wishlist = resp.get_json()
         self.assertEqual(new_wishlist["name"],
