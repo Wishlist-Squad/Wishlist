@@ -145,6 +145,28 @@ def create_wishlists():
 #     app.logger.info("Pet with ID [%s] updated.", pet.id)
 #     return make_response(jsonify(pet.serialize()), status.HTTP_200_OK)
 
+######################################################################
+# UPDATE AN EXISTING WISHLIST
+######################################################################
+@app.route("/wishlists/<int:wishlist_id>", methods=["PUT"])
+def update_pets(wishlist_id):
+    """
+    Update a Wishlist
+
+    This endpoint will update a wishlist based the body that is posted
+    """
+    app.logger.info("Request to update wishlist with id: %s", wishlist_id)
+    check_content_type("application/json")
+    wishlist = Wishlist.find(wishlist_id)
+    if not wishlist:
+        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
+    wishlist.deserialize(request.get_json())
+    wishlist.id = wishlist_id
+    wishlist.save()
+
+    app.logger.info("Wishlist with ID [%s] updated.", wishlist.id)
+    return make_response(jsonify(wishlist.serialize()), status.HTTP_200_OK)
+
 
 ######################################################################
 # DELETE A PET
