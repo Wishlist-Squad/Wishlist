@@ -65,10 +65,13 @@ class TestWishlistsServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
+<<<<<<< HEAD
 ######################################################################
 #  H E L P E R   M E T H O D S
 ######################################################################
 
+=======
+>>>>>>> delete_wishlist
     def _create_wishlists(self, count):
         """Factory method to create pets in bulk"""
         wishlists = []
@@ -92,18 +95,17 @@ class TestWishlistsServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "Wishlist Demo REST API Service")
 
-# LIST
 
-    # def test_get_pet_list(self):
-    #     """Get a list of Pets"""
-    #     self._create_pets(5)
-    #     resp = self.app.get(BASE_URL)
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), 5)
+# LIST
+    def test_get_wishlists_list(self):
+            """Get a list of Wishlists"""
+            self._create_wishlists(5)
+            resp = self.app.get(BASE_URL)
+            self.assertEqual(resp.status_code, status.HTTP_200_OK)
+            data = resp.get_json()
+            self.assertEqual(len(data), 5)
 
 # GET
-
     def test_get_wishlist(self):
         """Get a single Wishlist"""
         # get the id of a wishlist
@@ -122,7 +124,6 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 # CREATE
-
     def test_create_wishlist(self):
         """Create a new Wishlist"""
         test_wishlist = WishlistFactory()
@@ -238,19 +239,19 @@ class TestWishlistsServer(unittest.TestCase):
 
 # DELETE
 
-    # def test_delete_pet(self):
-    #     """Delete a Pet"""
-    #     test_pet = self._create_pets(1)[0]
-    #     resp = self.app.delete(
-    #         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-    #     self.assertEqual(len(resp.data), 0)
-    #     # make sure they are deleted
-    #     resp = self.app.get(
-    #         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    def test_delete_wishlist(self):
+        """Delete a Wishlist"""
+        test_wishlist = self._create_wishlists(1)[0]
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+        self.assertEqual(len(resp.data), 0)
+    # # make sure they are deleted
+    # resp = self.app.get(
+    #     "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
+    # )
+    # self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 # QUERY
 
