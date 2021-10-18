@@ -236,7 +236,6 @@ class TestWishlistsServer(unittest.TestCase):
     #     self.assertEqual(updated_pet["category"], "unknown")
 
 # DELETE
-
     def test_delete_wishlist(self):
         """Delete a Wishlist"""
         test_wishlist = self._create_wishlists(1)[0]
