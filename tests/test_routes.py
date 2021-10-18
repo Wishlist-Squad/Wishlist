@@ -1,19 +1,5 @@
-# Copyright 2016, 2021 John J. Rofrano. All Rights Reserved.
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-# https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 """
-Pet API Service Test Suite
+Wishlist API Service Test Suite
 
 Test cases can be run with the following:
   nosetests -v --with-spec --spec-color
@@ -21,7 +7,7 @@ Test cases can be run with the following:
   codecov --token=$CODECOV_TOKEN
 
   While debugging just these tests it's convinient to use this:
-    nosetests --stop tests/test_service.py:TestPetServer
+    nosetests --stop tests/test_service.py:TestWishlistsServer
 """
 
 import os
@@ -206,6 +192,27 @@ class TestWishlistsServer(unittest.TestCase):
     #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
 # UPDATE
+    def test_update_pet(self):
+        """Update an existing Wishlist"""
+        #create a wishlist to update
+        test_wishlist = WishlistFactory()
+        resp = self.app.post(
+            BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code,status.HTTP_201_CREATED)
+
+        #update the wishlist
+        new_wishlist = resp.get_json()
+        logging.debug(new_wishlist)
+        new_wishlist["name"] = "new_name"
+        resp = self.app.put(
+            "/wishlists/{}".format(new_wishlist["id"]),
+                 json=new_wishlist,
+                 content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        updated_wishlist = resp.get_json()
+        self.assertEqual(updated_wishlist["name"], "new_name")
 
     # def test_update_pet(self):
     #     """Update an existing Pet"""
