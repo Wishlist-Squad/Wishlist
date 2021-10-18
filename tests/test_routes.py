@@ -58,7 +58,7 @@ class TestWishlistsServer(unittest.TestCase):
     def setUpClass(cls):
         """Run once before all tests"""
         app.config["TESTING"] = True
-        app.config["DEBUG"] = False
+        app.config["DEBUG"] = True
         # Set up the test database
         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
         app.logger.setLevel(logging.CRITICAL)
@@ -106,7 +106,7 @@ class TestWishlistsServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "Wishlist Demo REST API Service")
 
-# GET
+# LIST
 
     # def test_get_pet_list(self):
     #     """Get a list of Pets"""
@@ -116,22 +116,24 @@ class TestWishlistsServer(unittest.TestCase):
     #     data = resp.get_json()
     #     self.assertEqual(len(data), 5)
 
-    # def test_get_pet(self):
-    #     """Get a single Wishlist"""
-    #     # get the id of a pet
-    #     wishlist= Wishlist(name="test",customer=123456)
-    #     test_pet = Wishlist(name="test",customer=123456)
-    #     resp = self.app.get(
-    #         "/wishlist/{}".format(wishlist.customer), content_type=CONTENT_TYPE_JSON
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(data["name"], test_pet.name)
+# GET
 
-    # def test_get_pet_not_found(self):
-    #     """Get a Pet thats not found"""
-    #     resp = self.app.get("/pets/0")
-    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    def test_get_wishlist(self):
+        """Get a single Wishlist"""
+        # get the id of a wishlist
+
+        wishlist = self._create_wishlists(1)[0]
+        resp = self.app.get(
+            f"{BASE_URL}/{wishlist.id}", content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], wishlist.name)
+
+    def test_get_wishlist_not_found(self):
+        """Get a Wishlist thats not found"""
+        resp = self.app.get("/wishlists/0")
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
 # CREATE
 
