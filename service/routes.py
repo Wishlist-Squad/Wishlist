@@ -42,18 +42,18 @@ from . import app
 ######################################################################
 # GET INDEX
 ######################################################################
-# @app.route("/")
-# def index():
-#     """Root URL response"""
-#     app.logger.info("Request for Root URL")
-#     return (
-#         jsonify(
-#             name="Pet Demo REST API Service",
-#             version="1.0",
-#             paths=url_for("list_pets", _external=True),
-#         ),
-#         status.HTTP_200_OK,
-#     )
+@app.route("/")
+def index():
+    """Root URL response"""
+    app.logger.info("Request for Root URL")
+    return (
+        jsonify(
+            name="Wishlist Demo REST API Service",
+            version="1.0",
+            paths=url_for("create_wishlists", _external=True),
+        ),
+        status.HTTP_200_OK,
+    )
 
 
 ######################################################################
@@ -98,26 +98,27 @@ from . import app
 
 
 ######################################################################
-# ADD A NEW PET
+# ADD A NEW WISHLIST
 ######################################################################
-# @app.route("/pets", methods=["POST"])
-# def create_pets():
-#     """
-#     Creates a Pet
-#     This endpoint will create a Pet based the data in the body that is posted
-#     """
-#     app.logger.info("Request to create a pet")
-#     check_content_type("application/json")
-#     pet = Pet()
-#     pet.deserialize(request.get_json())
-#     pet.create()
-#     message = pet.serialize()
-#     location_url = url_for("get_pets", pet_id=pet.id, _external=True)
+@app.route("/wishlists", methods=["POST"])
+def create_wishlists():
+    """
+    Creates a wishlist
+    This endpoint will create a Pet based the data in the body that is posted
+    """
+    app.logger.info("Request to create a wishlist")
+    check_content_type("application/json")
+    wishlist = Wishlist()
+    wishlist.deserialize(request.get_json())
 
-#     app.logger.info("Pet with ID [%s] created.", pet.id)
-#     return make_response(
-#         jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
-#     )
+    wishlist.create()
+    message = wishlist.serialize()
+    location_url = url_for("create_wishlists", wishlist_id=wishlist.id, _external=True)
+
+    app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
+    return make_response(
+        jsonify(message), status.HTTP_201_CREATED, {"Location": location_url}
+    )
 
 
 ######################################################################

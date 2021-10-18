@@ -31,11 +31,10 @@ import unittest
 # from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 from service import status  # HTTP Status Codes
-from service.models import db, init_db
+from service.models import db, init_db,Wishlist, DataValidationError, db, Product
 from service.routes import app
-from .factories import WishlistFactory
+from .factories import WishlistFactory, ProductFactory
 
-from service.models import Wishlist
 
 
 # Disable all but ciritcal errors during normal test run
@@ -46,63 +45,63 @@ logging.disable(logging.CRITICAL)
 DATABASE_URI = os.getenv(
     "DATABASE_URI", "postgres://postgres:postgres@localhost:5432/testdb"
 )
-BASE_URL = "/pets"
+BASE_URL = "/wishlists"
 CONTENT_TYPE_JSON = "application/json"
 
 
 ######################################################################
 #  T E S T   C A S E S
 ######################################################################
-# class TestPetServer(unittest.TestCase):
-#     """Pet Server Tests"""
+class TestWishlistsServer(unittest.TestCase):
+    """Wishlist Server Tests"""
 
-#     @classmethod
-#     def setUpClass(cls):
-#         """Run once before all tests"""
-#         app.config["TESTING"] = True
-#         app.config["DEBUG"] = False
-#         # Set up the test database
-#         app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
-#         app.logger.setLevel(logging.CRITICAL)
-#         init_db(app)
+    @classmethod
+    def setUpClass(cls):
+        """Run once before all tests"""
+        app.config["TESTING"] = True
+        app.config["DEBUG"] = False
+        # Set up the test database
+        app.config["SQLALCHEMY_DATABASE_URI"] = DATABASE_URI
+        app.logger.setLevel(logging.CRITICAL)
+        init_db(app)
 
-#     @classmethod
-#     def tearDownClass(cls):
-#         """Run once after all tests"""
-#         db.session.close()
+    @classmethod
+    def tearDownClass(cls):
+        """Run once after all tests"""
+        db.session.close()
 
-#     def setUp(self):
-#         """Runs before each test"""
-#         db.drop_all()  # clean up the last tests
-#         db.create_all()  # create new tables
-#         self.app = app.test_client()
+    def setUp(self):
+        """Runs before each test"""
+        db.drop_all()  # clean up the last tests
+        db.create_all()  # create new tables
+        self.app = app.test_client()
 
-#     def tearDown(self):
-#         db.session.remove()
-#         db.drop_all()
+    def tearDown(self):
+        db.session.remove()
+        db.drop_all()
 
-#     # def _create_pets(self, count):
-#     #     """Factory method to create pets in bulk"""
-#     #     wishlists = []
-#     #     for _ in range(count):
-#     #         test_pet = PetFactory()
-#     #         resp = self.app.post(
-#     #             BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-#     #         )
-#     #         self.assertEqual(
-#     #             resp.status_code, status.HTTP_201_CREATED, "Could not create test pet"
-#     #         )
-#     #         new_wishlists = resp.get_json()
-#     #         test_pet.id = new_pet["id"]
-#     #         wishlists.append(test_pet)
-#     #     return wishlists
+    # def _create_wishlists(self, count):
+    #     """Factory method to create pets in bulk"""
+    #     wishlists = []
+    #     for _ in range(count):
+    #         test_wishlist = WishlistFactory()
+    #         resp = self.app.post(
+    #             BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
+    #         )
+    #         self.assertEqual(
+    #             resp.status_code, status.HTTP_201_CREATED, "Could not create test wishlists"
+    #         )
+    #         new_wishlists = resp.get_json()
+    #         test_wishlist.id = new_wishlists["id"]
+    #         wishlists.append(test_pet)
+    #     return wishlists
 
-#     def test_index(self):
-#         """Test the Home Page"""
-#         resp = self.app.get("/")
-#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#         data = resp.get_json()
-#         self.assertEqual(data["name"], "Pet Demo REST API Service")
+    def test_index(self):
+        """Test the Home Page"""
+        resp = self.app.get("/")
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(data["name"], "Wishlist Demo REST API Service")
 
 #     # def test_get_pet_list(self):
 #     #     """Get a list of Pets"""
@@ -129,42 +128,42 @@ CONTENT_TYPE_JSON = "application/json"
 #     resp = self.app.get("/pets/0")
 #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-# def test_create_pet(self):
-#     """Create a new Pet"""
-#     test_pet = PetFactory()
-#     logging.debug(test_pet)
-#     resp = self.app.post(
-#         BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-#     # Make sure location header is set
-#     location = resp.headers.get("Location", None)
-#     self.assertIsNotNone(location)
-#     # Check the data is correct
-#     new_pet = resp.get_json()
-#     self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
-#     self.assertEqual(
-#         new_pet["category"], test_pet.category, "Categories do not match"
-#     )
-#     self.assertEqual(
-#         new_pet["available"], test_pet.available, "Availability does not match"
-#     )
-#     # Check that the location header was correct
-#     resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
-#     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#     new_pet = resp.get_json()
-#     self.assertEqual(new_pet["name"], test_pet.name, "Names do not match")
-#     self.assertEqual(
-#         new_pet["category"], test_pet.category, "Categories do not match"
-#     )
-#     self.assertEqual(
-#         new_pet["available"], test_pet.available, "Availability does not match"
-#     )
+    def test_create_wishlist(self):
+      """Create a new Wishlist"""
+      test_wishlist = WishlistFactory()
+      logging.debug(test_wishlist)
+      resp = self.app.post(
+          BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
+      )
+      self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+      # # Make sure location header is set
+      # location = resp.headers.get("Location", None)
+      # self.assertIsNotNone(location)
+      # # Check the data is correct
+      # new_wishlist = resp.get_json()
+      # self.assertEqual(new_wishlist["name"], new_wishlist.name, "Names do not match")
+      # self.assertEqual(
+      #     new_wishlist["customer_id"], new_wishlist.customer_id, "customer_id do not match"
+      # )
+      # self.assertEqual(
+      #     new_wishlist["products"], new_wishlist.products, "products does not match"
+      # )
+      # # Check that the location header was correct
+      # resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+      # self.assertEqual(resp.status_code, status.HTTP_200_OK)
+      # new_wishlist = resp.get_json()
+      # nosetestsself.assertEqual(new_wishlist["name"], new_wishlist.name, "Names do not match")
+      # self.assertEqual(
+      #     new_wishlist["customer_id"], new_wishlist.customer_id, "customer_id do not match"
+      # )
+      # self.assertEqual(
+      #     new_wishlist["products"], new_wishlist.products, "products does not match"
+      # )
 
-# def test_create_pet_no_data(self):
-#     """Create a Pet with missing data"""
-#     resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
-#     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    def test_create_pet_no_data(self):
+        """Create a wishlist with missing data"""
+        resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
+        self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
 # def test_create_pet_no_content_type(self):
 #     """Create a Pet with no content type"""
