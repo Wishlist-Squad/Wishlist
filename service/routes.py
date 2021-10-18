@@ -148,20 +148,20 @@ def create_wishlists():
 ######################################################################
 # DELETE A PET
 ######################################################################
-# @app.route("/wishlists/<int:wishlist_id>", methods=["DELETE"])
-# def delete_pets(wishlist_id):
-#     """
-#     Delete a Pet
+@app.route("/wishlists/<int:wishlist_id>", methods=["DELETE"])
+def delete_wishlists(wishlist_id):
+    """
+    Delete a Pet
 
-#     This endpoint will delete a Pet based the id specified in the path
-#     """
-#     app.logger.info("Request to delete pet with id: %s", wishlist_id)
-#     wishlist = Wishlist.find(wishlist_id)
-#     if wishlist:
-#         wishlist.delete()
+    This endpoint will delete a Pet based the id specified in the path
+    """
+    app.logger.info("Request to delete pet with id: %s", wishlist_id)
+    wishlist = Wishlist.find(wishlist_id)
+    if wishlist:
+        wishlist.delete()
 
-#     app.logger.info("Wishlist with ID [%s] delete complete.", wishlist_id)
-#     return make_response("", status.HTTP_204_NO_CONTENT)
+    app.logger.info("Wishlist with ID [%s] delete complete.", wishlist_id)
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
 
 ######################################################################
