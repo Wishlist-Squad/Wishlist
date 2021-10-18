@@ -72,7 +72,6 @@ def list_wishlists():
     #     pets = Pet.find_by_name(name)
     # else:
     wishlists = Wishlist.all()
-
     results = [wishlist.serialize() for wishlist in wishlists]
     app.logger.info("Returning %d wishlists", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
