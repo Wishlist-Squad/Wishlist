@@ -31,10 +31,9 @@ import unittest
 # from unittest.mock import MagicMock, patch
 from urllib.parse import quote_plus
 from service import status  # HTTP Status Codes
-from service.models import db, init_db,Wishlist, DataValidationError, db, Product
+from service.models import db, init_db, Wishlist, DataValidationError, db, Product
 from service.routes import app
 from .factories import WishlistFactory, ProductFactory
-
 
 
 # Disable all but ciritcal errors during normal test run
@@ -80,21 +79,25 @@ class TestWishlistsServer(unittest.TestCase):
         db.session.remove()
         db.drop_all()
 
-    # def _create_wishlists(self, count):
-    #     """Factory method to create pets in bulk"""
-    #     wishlists = []
-    #     for _ in range(count):
-    #         test_wishlist = WishlistFactory()
-    #         resp = self.app.post(
-    #             BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
-    #         )
-    #         self.assertEqual(
-    #             resp.status_code, status.HTTP_201_CREATED, "Could not create test wishlists"
-    #         )
-    #         new_wishlists = resp.get_json()
-    #         test_wishlist.id = new_wishlists["id"]
-    #         wishlists.append(test_pet)
-    #     return wishlists
+######################################################################
+#  H E L P E R   M E T H O D S
+######################################################################
+
+    def _create_wishlists(self, count):
+        """Factory method to create pets in bulk"""
+        wishlists = []
+        for _ in range(count):
+            test_wishlist = WishlistFactory()
+            resp = self.app.post(
+                BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
+            )
+            self.assertEqual(
+                resp.status_code, status.HTTP_201_CREATED, "Could not create test wishlists"
+            )
+            new_wishlists = resp.get_json()
+            test_wishlist.id = new_wishlists["id"]
+            wishlists.append(test_wishlist)
+        return wishlists
 
     def test_index(self):
         """Test the Home Page"""
@@ -103,75 +106,82 @@ class TestWishlistsServer(unittest.TestCase):
         data = resp.get_json()
         self.assertEqual(data["name"], "Wishlist Demo REST API Service")
 
-#     # def test_get_pet_list(self):
-#     #     """Get a list of Pets"""
-#     #     self._create_pets(5)
-#     #     resp = self.app.get(BASE_URL)
-#     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#     #     data = resp.get_json()
-#     #     self.assertEqual(len(data), 5)
+# GET
 
-#     def test_get_pet(self):
-#         """Get a single Wishlist"""
-#         # get the id of a pet
-#         wishlist= Wishlist(name="test",customer=123456)
-#         test_pet = Wishlist(name="test",customer=123456)
-#         resp = self.app.get(
-#             "/wishlist/{}".format(wishlist.customer), content_type=CONTENT_TYPE_JSON
-#         )
-#         self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#         data = resp.get_json()
-#         self.assertEqual(data["name"], test_pet.name)
+    # def test_get_pet_list(self):
+    #     """Get a list of Pets"""
+    #     self._create_pets(5)
+    #     resp = self.app.get(BASE_URL)
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     data = resp.get_json()
+    #     self.assertEqual(len(data), 5)
 
-# def test_get_pet_not_found(self):
-#     """Get a Pet thats not found"""
-#     resp = self.app.get("/pets/0")
-#     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    # def test_get_pet(self):
+    #     """Get a single Wishlist"""
+    #     # get the id of a pet
+    #     wishlist= Wishlist(name="test",customer=123456)
+    #     test_pet = Wishlist(name="test",customer=123456)
+    #     resp = self.app.get(
+    #         "/wishlist/{}".format(wishlist.customer), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     data = resp.get_json()
+    #     self.assertEqual(data["name"], test_pet.name)
+
+    # def test_get_pet_not_found(self):
+    #     """Get a Pet thats not found"""
+    #     resp = self.app.get("/pets/0")
+    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+
+# CREATE
 
     def test_create_wishlist(self):
-      """Create a new Wishlist"""
-      test_wishlist = WishlistFactory()
-      logging.debug(test_wishlist)
-      resp = self.app.post(
-          BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
-      )
-      self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-      # Make sure location header is set
-      location = resp.headers.get("Location", None)
-      self.assertIsNotNone(location)
-      # Check the data is correct
-      new_wishlist = resp.get_json()
-      self.assertEqual(new_wishlist["name"], test_wishlist.name, "Names do not match")
-      self.assertEqual(
-          new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
-      )
-      self.assertEqual(
-          new_wishlist["products"], test_wishlist.products, "products does not match"
-      )
-      # # Check that the location header was correct
-      # resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
-      # self.assertEqual(resp.status_code, status.HTTP_200_OK)
-      # new_wishlist = resp.get_json()
-      # nosetestsself.assertEqual(new_wishlist["name"], test_wishlist.name, "Names do not match")
-      # self.assertEqual(
-      #     new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
-      # )
-      # self.assertEqual(
-      #     new_wishlist["products"], test_wishlist.products, "products does not match"
-      # )
+        """Create a new Wishlist"""
+        test_wishlist = WishlistFactory()
+        logging.debug(test_wishlist)
+        resp = self.app.post(
+            BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        # Make sure location header is set
+        location = resp.headers.get("Location", None)
+        self.assertIsNotNone(location)
+        # Check the data is correct
+        new_wishlist = resp.get_json()
+        self.assertEqual(new_wishlist["name"],
+                         test_wishlist.name, "Names do not match")
+        self.assertEqual(
+            new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
+        )
+        self.assertEqual(
+            new_wishlist["products"], test_wishlist.products, "products does not match"
+        )
+        # Check that the location header was correct
+        # resp = self.app.get(location, content_type=CONTENT_TYPE_JSON)
+        # self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # new_wishlist = resp.get_json()
+        # self.assertEqual(new_wishlist["name"],
+        #                  test_wishlist.name, "Names do not match")
+        # self.assertEqual(
+        #     new_wishlist["customer_id"], test_wishlist.customer_id, "customer_id do not match"
+        # )
+        # self.assertEqual(
+        #     new_wishlist["products"], test_wishlist.products, "products does not match"
+        # )
 
     def test_create_wishlist_no_data(self):
         """Create a wishlist with missing data"""
         resp = self.app.post(BASE_URL, json={}, content_type=CONTENT_TYPE_JSON)
         self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-    def test_create_pet_no_content_type(self):
-        """Create a Pet with no content type"""
+    def test_create_pet_wishlist_content_type(self):
+        """Create a Wishlist with no content type"""
         resp = self.app.post(BASE_URL)
-        self.assertEqual(resp.status_code, status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
+        self.assertEqual(resp.status_code,
+                         status.HTTP_415_UNSUPPORTED_MEDIA_TYPE)
 
     # def test_create_wishlist_bad_customer_id (self):
-    #     """ Create a Pet with bad available data """
+    #     """ Create a Wishlist with bad available data """
     #     test_wishlist = WishlistFactory()
     #     logging.debug(test_wishlist)
     #     # change available to a string
@@ -181,79 +191,85 @@ class TestWishlistsServer(unittest.TestCase):
     #     )
     #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-# def test_create_pet_bad_gender(self):
-#     """ Create a Pet with bad available data """
-#     pet = PetFactory()
-#     logging.debug(pet)
-#     # change gender to a bad string
-#     test_pet = pet.serialize()
-#     test_pet["gender"] = "male"    # wrong case
-#     resp = self.app.post(
-#         BASE_URL, json=test_pet, content_type="application/json"
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    # def test_create_pet_bad_gender(self):
+    #     """ Create a Pet with bad available data """
+    #     pet = PetFactory()
+    #     logging.debug(pet)
+    #     # change gender to a bad string
+    #     test_pet = pet.serialize()
+    #     test_pet["gender"] = "male"    # wrong case
+    #     resp = self.app.post(
+    #         BASE_URL, json=test_pet, content_type="application/json"
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
-# def test_update_pet(self):
-#     """Update an existing Pet"""
-#     # create a pet to update
-#     test_pet = PetFactory()
-#     resp = self.app.post(
-#         BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+# UPDATE
 
-#     # update the pet
-#     new_pet = resp.get_json()
-#     logging.debug(new_pet)
-#     new_pet["category"] = "unknown"
-#     resp = self.app.put(
-#         "/pets/{}".format(new_pet["id"]),
-#         json=new_pet,
-#         content_type=CONTENT_TYPE_JSON,
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#     updated_pet = resp.get_json()
-#     self.assertEqual(updated_pet["category"], "unknown")
+    # def test_update_pet(self):
+    #     """Update an existing Pet"""
+    #     # create a pet to update
+    #     test_pet = PetFactory()
+    #     resp = self.app.post(
+    #         BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-# def test_delete_pet(self):
-#     """Delete a Pet"""
-#     test_pet = self._create_pets(1)[0]
-#     resp = self.app.delete(
-#         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
-#     self.assertEqual(len(resp.data), 0)
-#     # make sure they are deleted
-#     resp = self.app.get(
-#         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+    #     # update the pet
+    #     new_pet = resp.get_json()
+    #     logging.debug(new_pet)
+    #     new_pet["category"] = "unknown"
+    #     resp = self.app.put(
+    #         "/pets/{}".format(new_pet["id"]),
+    #         json=new_pet,
+    #         content_type=CONTENT_TYPE_JSON,
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     updated_pet = resp.get_json()
+    #     self.assertEqual(updated_pet["category"], "unknown")
 
-# def test_query_pet_list_by_category(self):
-#     """Query Pets by Category"""
-#     pets = self._create_pets(10)
-#     test_category = pets[0].category
-#     category_pets = [pet for pet in pets if pet.category == test_category]
-#     resp = self.app.get(
-#         BASE_URL, query_string="category={}".format(quote_plus(test_category))
-#     )
-#     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-#     data = resp.get_json()
-#     self.assertEqual(len(data), len(category_pets))
-#     # check the data just to be sure
-#     for pet in data:
-#         self.assertEqual(pet["category"], test_category)
+# DELETE
 
-# @patch('service.routes.Pet.find_by_name')
-# def test_bad_request(self, bad_request_mock):
-#     """ Test a Bad Request error from Find By Name """
-#     bad_request_mock.side_effect = DataValidationError()
-#     resp = self.app.get(BASE_URL, query_string='name=fido')
-#     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+    # def test_delete_pet(self):
+    #     """Delete a Pet"""
+    #     test_pet = self._create_pets(1)[0]
+    #     resp = self.app.delete(
+    #         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
+    #     self.assertEqual(len(resp.data), 0)
+    #     # make sure they are deleted
+    #     resp = self.app.get(
+    #         "{0}/{1}".format(BASE_URL, test_pet.id), content_type=CONTENT_TYPE_JSON
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-# @patch('service.routes.Pet.find_by_name')
-# def test_mock_search_data(self, pet_find_mock):
-#     """ Test showing how to mock data """
-#     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
-#     resp = self.app.get(BASE_URL, query_string='name=fido')
-#     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+# QUERY
+
+    # def test_query_pet_list_by_category(self):
+    #     """Query Pets by Category"""
+    #     pets = self._create_pets(10)
+    #     test_category = pets[0].category
+    #     category_pets = [pet for pet in pets if pet.category == test_category]
+    #     resp = self.app.get(
+    #         BASE_URL, query_string="category={}".format(quote_plus(test_category))
+    #     )
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     data = resp.get_json()
+    #     self.assertEqual(len(data), len(category_pets))
+    #     # check the data just to be sure
+    #     for pet in data:
+    #         self.assertEqual(pet["category"], test_category)
+
+    # @patch('service.routes.Pet.find_by_name')
+    # def test_bad_request(self, bad_request_mock):
+    #     """ Test a Bad Request error from Find By Name """
+    #     bad_request_mock.side_effect = DataValidationError()
+    #     resp = self.app.get(BASE_URL, query_string='name=fido')
+    #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
+
+    # @patch('service.routes.Pet.find_by_name')
+    # def test_mock_search_data(self, pet_find_mock):
+    #     """ Test showing how to mock data """
+    #     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
+    #     resp = self.app.get(BASE_URL, query_string='name=fido')
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
