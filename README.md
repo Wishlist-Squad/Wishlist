@@ -1,6 +1,6 @@
 # Wishlist Microservice
 
-[![Build Status](https://travis-ci.org/nyu-devops/lab-flask-tdd.svg?branch=master)](https://travis-ci.org/nyu-devops/lab-flask-tdd)
+[![Build Status](https://app.travis-ci.com/Wishlist-Squad/wishlists.svg?branch=main)](https://app.travis-ci.com/Wishlist-Squad/wishlists)
 [![codecov](https://codecov.io/gh/Wishlist-Squad/wishlists/branch/main/graph/badge.svg?token=WSM2E1CI2D)](https://codecov.io/gh/Wishlist-Squad/wishlists)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
