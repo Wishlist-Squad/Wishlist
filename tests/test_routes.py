@@ -322,3 +322,37 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(data["id"], product.id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], test_wishlist.id)
+
+# GET ITEM LIST FROM WISHLIST
+
+    def test_get_product_list(self):
+        """ Get a list of Products """
+        # add two products to wishlist
+        test_wishlist = self._create_wishlists(1)[0]
+        product_list = ProductFactory.create_batch(2)
+
+        # Create product 1
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product_list[0].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Create product 2
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product_list[1].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # get the list back and make sure there are 2
+        resp = self.app.get(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        self.assertEqual(len(data), 2)
