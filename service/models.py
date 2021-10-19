@@ -209,14 +209,3 @@ class Wishlist(db.Model, PersistentBase):
         """
         logger.info(f"Finding Wishlists for customer: {customer_id}")
         return cls.query.filter(cls.customer_id == customer_id)
-
-    @classmethod
-    def find_by_customer_and_id(cls, customer_id, wishlist_id):
-        """ Returns single Wishlist associated with given customer and id
-        Args:
-            customer_id (integer): the id of the Wishlists associated
-            wishlist_id (integer): the id of the wishlist
-        """
-        logger.info(
-            f"Finding Wishlist for customer: {customer_id} of id: {wishlist_id}")
-        return cls.query.get({"id": wishlist_id})
