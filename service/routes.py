@@ -34,7 +34,7 @@ from werkzeug.exceptions import NotFound
 # For this example we'll use SQLAlchemy, a popular ORM that supports a
 # variety of backends including SQLite, MySQL, and PostgreSQL
 from flask_sqlalchemy import SQLAlchemy
-from service.models import Wishlist, DataValidationError
+from service.models import Product, Wishlist, DataValidationError
 
 # Import Flask application
 from . import app
@@ -186,7 +186,7 @@ def delete_wishlists(wishlist_id):
 
 
 # ---------------------------------------------------------------------
-#                A D D R E S S   M E T H O D S
+#                I T E M   M E T H O D S
 # ---------------------------------------------------------------------
 
 
@@ -202,23 +202,23 @@ def delete_wishlists(wishlist_id):
 #     return make_response(jsonify(results), status.HTTP_200_OK)
 
 # ######################################################################
-# # ADD AN ADDRESS TO AN ACCOUNT
+# # ADD A ITEM TO AN WISHLIST
 # ######################################################################
-# @app.route('/accounts/<int:account_id>/addresses', methods=['POST'])
-# def create_addresses(account_id):
-#     """
-#     Create an Address on an Account
-#     This endpoint will add an address to an account
-#     """
-#     app.logger.info("Request to add an address to an account")
-#     check_content_type("application/json")
-#     account = Account.find_or_404(account_id)
-#     address = Address()
-#     address.deserialize(request.get_json())
-#     account.addresses.append(address)
-#     account.save()
-#     message = address.serialize()
-#     return make_response(jsonify(message), status.HTTP_201_CREATED)
+@app.route('/wishlists/<int:wishlist_id>/items', methods=['POST'])
+def create_item(wishlist_id):
+    """
+    Create an Item on an Wishlist
+    This endpoint will add an item to an wishlist
+    """
+    app.logger.info("Request to add an item to an wishlist")
+    check_content_type("application/json")
+    wishlist = Wishlist.find(wishlist_id)
+    product = Product()
+    product.deserialize(request.get_json())
+    wishlist.products.append(product)
+    wishlist.save()
+    message = product.serialize()
+    return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 # ######################################################################
 # # RETRIEVE AN ADDRESS FROM ACCOUNT
