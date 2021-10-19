@@ -20,7 +20,7 @@ from service import status  # HTTP Status Codes
 from service.models import db, init_db, Wishlist, DataValidationError, db, Product
 from service.routes import app
 from .factories import WishlistFactory, ProductFactory
-
+from werkzeug.exceptions import NotFound
 
 # Disable all but ciritcal errors during normal test run
 # uncomment for debugging failing tests
@@ -214,7 +214,22 @@ class TestWishlistsServer(unittest.TestCase):
         updated_wishlist = resp.get_json()
         self.assertEqual(updated_wishlist["name"], "new_name")
 
+    def test_update_bad_wishlist(self):
+        """Attempt to update a non existant Wishlist"""
+        test_wishlist = WishlistFactory()
+        resp = self.app.put(
+            f"/wishlists/{99}",
+            json={},
+            content_type=CONTENT_TYPE_JSON,
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(resp.get_json()[
+                         "message"], "404 Not Found: Wishlist with id '99' was not found.")
+
+
 # DELETE
+
+
     def test_delete_wishlist(self):
         """Delete a Wishlist"""
         test_wishlist = self._create_wishlists(1)[0]
@@ -266,7 +281,6 @@ class TestWishlistsServer(unittest.TestCase):
         """ Add an item to a wishlist """
         test_wishlist = self._create_wishlists(1)[0]
         product = ProductFactory()
-        print(product)
         resp = self.app.post(
             "/wishlists/{}/items".format(test_wishlist.id),
             json=product.serialize(),
@@ -277,4 +291,4 @@ class TestWishlistsServer(unittest.TestCase):
         logging.debug(data)
         self.assertEqual(data["id"], product.id)
         self.assertEqual(data["name"], product.name)
-        self.assertEqual(data["wishlist_id"], product.wishlist_id)
+        self.assertEqual(data["wishlist_id"], test_wishlist.id)
