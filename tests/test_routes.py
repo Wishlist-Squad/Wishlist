@@ -20,7 +20,6 @@ from service import status  # HTTP Status Codes
 from service.models import db, init_db, Wishlist, DataValidationError, db, Product
 from service.routes import app
 from .factories import WishlistFactory, ProductFactory
-from werkzeug.exceptions import NotFound
 
 # Disable all but ciritcal errors during normal test run
 # uncomment for debugging failing tests
