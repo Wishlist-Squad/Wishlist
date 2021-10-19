@@ -182,7 +182,8 @@ def delete_wishlists(wishlist_id):
     wishlist = Wishlist.find(wishlist_id)
     if wishlist:
         wishlist.delete()
-
+    else:
+        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
     app.logger.info("Wishlist with ID [%s] delete complete.", wishlist_id)
     return make_response("", status.HTTP_204_NO_CONTENT)
 
