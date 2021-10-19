@@ -235,6 +235,18 @@ def get_products(wishlist_id, product_id):
     message = product.serialize()
     return make_response(jsonify(message), status.HTTP_200_OK)
 
+######################################################################
+# LIST PRODUCTS OF A WISHLIST
+######################################################################
+@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
+def list_items_wishlists(wishlist_id):
+    """Returns all of items of a wishlist"""
+    app.logger.info("Request for Wishlist Products...")
+    wishlist = Wishlist.find_or_404(wishlist_id)
+    results = [product.serialize() for product in wishlist.products]
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
+
 # ######################################################################
 # # UPDATE AN ADDRESS
 # ######################################################################
