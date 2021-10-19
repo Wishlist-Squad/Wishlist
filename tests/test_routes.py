@@ -83,6 +83,23 @@ class TestWishlistsServer(unittest.TestCase):
             wishlists.append(test_wishlist)
         return wishlists
 
+    def test_wishlist_repr(self):
+        """Wishlist repr"""
+        wishlist = WishlistFactory()
+        wishlist.id = 1
+        wishlist.customer_id = 2
+        wishlist.name = "new name"
+        repr_str = "<Wishlist %r id=[%s] customer=[%s]>" % ("new name", 1, 2)
+        self.assertEqual(wishlist.__repr__(), repr_str)
+
+    def test_product_repr(self):
+        """Product repr"""
+        product = ProductFactory()
+        product.id = 1
+        product.name = "new name"
+        repr_str = "<Product %r id=[%s]>" % ("new name", 1)
+        self.assertEqual(product.__repr__(), repr_str)
+
     def test_index(self):
         """Test the Home Page"""
         resp = self.app.get("/")
@@ -92,7 +109,6 @@ class TestWishlistsServer(unittest.TestCase):
 
 
 # LIST
-
 
     def test_get_wishlists_list(self):
         """Get a list of Wishlists"""
@@ -228,6 +244,7 @@ class TestWishlistsServer(unittest.TestCase):
 
 
 # DELETE
+
 
     def test_delete_wishlist(self):
         """Delete a Wishlist"""
