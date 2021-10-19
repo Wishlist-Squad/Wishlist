@@ -115,14 +115,12 @@ class TestWishlist(unittest.TestCase):
         self.assertEqual(wishlist.id, 1)
 
         # Fetch it back
-        wishlist = Wishlist.find_by_customer_and_id(
-            wishlist.customer_id, wishlist.id)
+        wishlist = Wishlist.find(wishlist.id)
         wishlist.name = "Random Stuff"
         wishlist.save()
 
         # Fetch it back again
-        wishlist = Wishlist.find_by_customer_and_id(
-            wishlist.customer_id, wishlist.id)
+        wishlist = Wishlist.find(wishlist.id)
         self.assertEqual(wishlist.name, "Random Stuff")
 
     def test_delete_an_wishlist(self):
@@ -152,7 +150,7 @@ class TestWishlist(unittest.TestCase):
         self.assertEqual(wishlist.id, 1)
 
     def test_find_by_name(self):
-        """ Find by name """
+        """ Find Wishlists by name"""
         wishlist = self._create_wishlist()
         wishlist.create()
 

@@ -93,6 +93,7 @@ class TestWishlistsServer(unittest.TestCase):
 
 # LIST
 
+
     def test_get_wishlists_list(self):
         """Get a list of Wishlists"""
         self._create_wishlists(5)
@@ -228,7 +229,6 @@ class TestWishlistsServer(unittest.TestCase):
 
 # DELETE
 
-
     def test_delete_wishlist(self):
         """Delete a Wishlist"""
         test_wishlist = self._create_wishlists(1)[0]
@@ -245,20 +245,22 @@ class TestWishlistsServer(unittest.TestCase):
 
 # QUERY
 
-    # def test_query_pet_list_by_category(self):
-    #     """Query Pets by Category"""
-    #     pets = self._create_pets(10)
-    #     test_category = pets[0].category
-    #     category_pets = [pet for pet in pets if pet.category == test_category]
-    #     resp = self.app.get(
-    #         BASE_URL, query_string="category={}".format(quote_plus(test_category))
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), len(category_pets))
-    #     # check the data just to be sure
-    #     for pet in data:
-    #         self.assertEqual(pet["category"], test_category)
+    def test_query_wishlist_list_by_customer(self):
+        """Query Wishlists by Customer"""
+        wishlists = self._create_wishlists(10)
+        test_customer_id = wishlists[0].customer_id
+        customer_id_wishlists = [
+            wishlist for wishlist in wishlists if wishlist.customer_id == test_customer_id]
+        resp = self.app.get(
+            BASE_URL, query_string="customer_id={}".format(
+                quote_plus(str(test_customer_id)))
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(customer_id_wishlists))
+        # check the data just to be sure
+        for wishlist in data:
+            self.assertEqual(wishlist["customer_id"], test_customer_id)
 
     # @patch('service.routes.Pet.find_by_name')
     # def test_bad_request(self, bad_request_mock):
