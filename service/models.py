@@ -124,7 +124,7 @@ class Product(db.Model, PersistentBase):
             data (dict): A dictionary containing the resource data
         """
         try:
-            # self.id = data["id"]
+            self.id = data["id"]
             self.wishlist_id = data["wishlist_id"]
             self.name = data["name"]
         except KeyError as error:
