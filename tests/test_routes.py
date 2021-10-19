@@ -93,13 +93,14 @@ class TestWishlistsServer(unittest.TestCase):
 
 
 # LIST
+
     def test_get_wishlists_list(self):
-            """Get a list of Wishlists"""
-            self._create_wishlists(5)
-            resp = self.app.get(BASE_URL)
-            self.assertEqual(resp.status_code, status.HTTP_200_OK)
-            data = resp.get_json()
-            self.assertEqual(len(data), 5)
+        """Get a list of Wishlists"""
+        self._create_wishlists(5)
+        resp = self.app.get(BASE_URL)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), 5)
 
 # GET
     def test_get_wishlist(self):
@@ -191,49 +192,27 @@ class TestWishlistsServer(unittest.TestCase):
     #     self.assertEqual(resp.status_code, status.HTTP_400_BAD_REQUEST)
 
 # UPDATE
-    def test_update_pet(self):
+    def test_update_wishlist(self):
         """Update an existing Wishlist"""
-        #create a wishlist to update
+        # create a wishlist to update
         test_wishlist = WishlistFactory()
         resp = self.app.post(
             BASE_URL, json=test_wishlist.serialize(), content_type=CONTENT_TYPE_JSON
         )
-        self.assertEqual(resp.status_code,status.HTTP_201_CREATED)
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
-        #update the wishlist
+        # update the wishlist
         new_wishlist = resp.get_json()
         logging.debug(new_wishlist)
         new_wishlist["name"] = "new_name"
         resp = self.app.put(
             "/wishlists/{}".format(new_wishlist["id"]),
-                 json=new_wishlist,
-                 content_type=CONTENT_TYPE_JSON,
+            json=new_wishlist,
+            content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
         updated_wishlist = resp.get_json()
         self.assertEqual(updated_wishlist["name"], "new_name")
-
-    # def test_update_pet(self):
-    #     """Update an existing Pet"""
-    #     # create a pet to update
-    #     test_pet = PetFactory()
-    #     resp = self.app.post(
-    #         BASE_URL, json=test_pet.serialize(), content_type=CONTENT_TYPE_JSON
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
-
-    #     # update the pet
-    #     new_pet = resp.get_json()
-    #     logging.debug(new_pet)
-    #     new_pet["category"] = "unknown"
-    #     resp = self.app.put(
-    #         "/pets/{}".format(new_pet["id"]),
-    #         json=new_pet,
-    #         content_type=CONTENT_TYPE_JSON,
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     updated_pet = resp.get_json()
-    #     self.assertEqual(updated_pet["category"], "unknown")
 
 # DELETE
     def test_delete_wishlist(self):
@@ -287,9 +266,10 @@ class TestWishlistsServer(unittest.TestCase):
         """ Add an item to a wishlist """
         test_wishlist = self._create_wishlists(1)[0]
         product = ProductFactory()
+        print(product)
         resp = self.app.post(
-            "/wishlists/{}/items".format(test_wishlist.id), 
-            json=product.serialize(), 
+            "/wishlists/{}/items".format(test_wishlist.id),
+            json=product.serialize(),
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
@@ -298,4 +278,3 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(data["id"], product.id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], product.wishlist_id)
-
