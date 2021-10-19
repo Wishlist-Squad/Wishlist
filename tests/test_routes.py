@@ -280,3 +280,22 @@ class TestWishlistsServer(unittest.TestCase):
     #     pet_find_mock.return_value = [MagicMock(serialize=lambda: {'name': 'fido'})]
     #     resp = self.app.get(BASE_URL, query_string='name=fido')
     #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+# ADD ITEM TO WISHLIST
+
+    def test_add_product(self):
+        """ Add an item to a wishlist """
+        test_wishlist = self._create_wishlists(1)[0]
+        product = ProductFactory()
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product.serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+        data = resp.get_json()
+        logging.debug(data)
+        self.assertEqual(data["id"], product.id)
+        self.assertEqual(data["name"], product.name)
+        self.assertEqual(data["wishlist_id"], product.wishlist_id)
+
