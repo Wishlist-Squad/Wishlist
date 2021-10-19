@@ -221,17 +221,19 @@ def create_item(wishlist_id):
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 # ######################################################################
-# # RETRIEVE AN ADDRESS FROM ACCOUNT
+# # RETRIEVE AN ITEM FROM WISHLIST
 # ######################################################################
-# @app.route('/accounts/<int:account_id>/addresses/<int:address_id>', methods=['GET'])
-# def get_addresses(account_id, address_id):
-#     """
-#     Get an Address
-#     This endpoint returns just an address
-#     """
-#     app.logger.info("Request to get an address with id: %s", address_id)
-#     address = Address.find_or_404(address_id)
-#     return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
+@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['GET'])
+def get_products(wishlist_id, product_id):
+    """
+    Get an Product
+    This endpoint returns just an product
+    """
+    app.logger.info("Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    wishlist = Wishlist.find_or_404(wishlist_id)
+    product = Product.find_or_404(product_id)
+    message = product.serialize()
+    return make_response(jsonify(message), status.HTTP_200_OK)
 
 # ######################################################################
 # # UPDATE AN ADDRESS
