@@ -245,6 +245,11 @@ class TestWishlistsServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
         self.assertEqual(len(resp.data), 0)
+        resp = self.app.delete(
+            "{0}/{1}".format(BASE_URL, 6324), content_type=CONTENT_TYPE_JSON
+        )
+        self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
+        self.assertEqual(len(resp.data), 0)
     # # make sure they are deleted
     # resp = self.app.get(
     #     "{0}/{1}".format(BASE_URL, test_wishlist.id), content_type=CONTENT_TYPE_JSON
