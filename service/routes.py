@@ -223,16 +223,36 @@ def create_item(wishlist_id):
     message = product.serialize()
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
+
+# ######################################################################
+# # DELETE AN ITEM FROM WISHLIST
+# ######################################################################
+
+@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['DELETE'])
+def delete_products(wishlist_id, product_id):
+    """
+    Delete an Product
+    """
+    app.logger.info(
+        "Request to delete product with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    product = Product.find(product_id)
+    if product:
+        product.delete()
+    return make_response("", status.HTTP_204_NO_CONTENT)
+
 # ######################################################################
 # # RETRIEVE AN ITEM FROM WISHLIST
 # ######################################################################
+
+
 @app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['GET'])
 def get_products(wishlist_id, product_id):
     """
     Get an Product
     This endpoint returns just an product
     """
-    app.logger.info("Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    app.logger.info(
+        "Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
     wishlist = Wishlist.find_or_404(wishlist_id)
     product = Product.find_or_404(product_id)
     message = product.serialize()
@@ -241,6 +261,8 @@ def get_products(wishlist_id, product_id):
 ######################################################################
 # LIST PRODUCTS OF A WISHLIST
 ######################################################################
+
+
 @app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
 def list_items_wishlists(wishlist_id):
     """Returns all of items of a wishlist"""
@@ -248,40 +270,6 @@ def list_items_wishlists(wishlist_id):
     wishlist = Wishlist.find_or_404(wishlist_id)
     results = [product.serialize() for product in wishlist.products]
     return make_response(jsonify(results), status.HTTP_200_OK)
-
-
-# ######################################################################
-# # UPDATE AN ADDRESS
-# ######################################################################
-# @app.route("/accounts/<int:account_id>/addresses/<int:address_id>", methods=["PUT"])
-# def update_addresses(account_id, address_id):
-#     """
-#     Update an Address
-#     This endpoint will update an Address based the body that is posted
-#     """
-#     app.logger.info("Request to update address with id: %s", address_id)
-#     check_content_type("application/json")
-#     address = Address.find_or_404(address_id)
-#     address.deserialize(request.get_json())
-#     address.id = address_id
-#     address.save()
-#     return make_response(jsonify(address.serialize()), status.HTTP_200_OK)
-
-# ######################################################################
-# # DELETE AN ADDRESS
-# ######################################################################
-# @app.route("/accounts/<int:account_id>/addresses/<int:address_id>", methods=["DELETE"])
-# def delete_addresses(account_id, address_id):
-#     """
-#     Delete an Address
-#     This endpoint will delete an Address based the id specified in the path
-#     """
-#     app.logger.info("Request to delete account with id: %s", account_id)
-#     address = Address.find(address_id)
-#     if address:
-#         address.delete()
-#     return make_response("", status.HTTP_204_NO_CONTENT)
-
 
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
