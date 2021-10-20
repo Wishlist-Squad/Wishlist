@@ -220,6 +220,31 @@ def create_item(wishlist_id):
     message = product.serialize()
     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
+
+# ######################################################################
+# # DELETE AN ITEM FROM WISHLIST
+# ######################################################################
+@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['DELETE'])
+def delete_products(wishlist_id, product_id):
+    """
+    Delete an Product
+    This endpoint returns a success or fail message
+    """
+    app.logger.info("Request to delete an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    check_content_type("application/json")
+    wishlist = Wishlist.find(wishlist_id)
+    if not wishlist:
+        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
+    product = Product.find_or_404(product_id)
+    product.deserialize(request.get_json())
+    product.delete()
+    app.logger.info("the item with id %s was deleted from wishlist %s.",product_id, wishlist_id)
+    wishlist.save()
+    message = product.serialize()
+    return make_response(jsonify(message), status.HTTP_204_NO_CONTENT)
+
+
+
 # ######################################################################
 # # RETRIEVE AN ITEM FROM WISHLIST
 # ######################################################################
