@@ -42,6 +42,8 @@ from . import app
 ######################################################################
 # GET INDEX
 ######################################################################
+
+
 @app.route("/")
 def index():
     """Root URL response"""
@@ -50,7 +52,7 @@ def index():
         jsonify(
             name="Wishlist Demo REST API Service",
             version="1.0",
-            paths=url_for("create_wishlists", _external=True),
+            paths=url_for("list_wishlists", _external=True),
         ),
         status.HTTP_200_OK,
     )
@@ -65,13 +67,10 @@ def list_wishlists():
     app.logger.info("Request for wishlists list")
     wishlists = []
     customer_id = request.args.get("customer_id")
-    # name = request.args.get("name")
-    # if category:
-    #     pets = Pet.find_by_category(category)
-    # elif name:
-    #     pets = Pet.find_by_name(name)
-    # else:
-    wishlists = Wishlist.all()
+    if customer_id:
+        wishlists = Wishlist.find_by_customer(customer_id)
+    else:
+        wishlists = Wishlist.all()
     results = [wishlist.serialize() for wishlist in wishlists]
     app.logger.info("Returning %d wishlists", len(results))
     return make_response(jsonify(results), status.HTTP_200_OK)
@@ -113,8 +112,9 @@ def create_wishlists():
 
     wishlist.create()
     message = wishlist.serialize()
-    
-    location_url = url_for("create_wishlists", wishlist_id=wishlist.id, _external=True)
+
+    location_url = url_for(
+        "create_wishlists", wishlist_id=wishlist.id, _external=True)
 
     app.logger.info("Wishlist with ID [%s] created.", wishlist.id)
     return make_response(
@@ -146,6 +146,8 @@ def create_wishlists():
 ######################################################################
 # UPDATE AN EXISTING WISHLIST
 ######################################################################
+
+
 @app.route("/wishlists/<int:wishlist_id>", methods=["PUT"])
 def update_pets(wishlist_id):
     """
@@ -157,7 +159,8 @@ def update_pets(wishlist_id):
     check_content_type("application/json")
     wishlist = Wishlist.find(wishlist_id)
     if not wishlist:
-        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
+        raise NotFound(
+            "Wishlist with id '{}' was not found.".format(wishlist_id))
     wishlist.deserialize(request.get_json())
     wishlist.id = wishlist_id
     wishlist.save()
@@ -259,6 +262,18 @@ def get_products(wishlist_id, product_id):
     product = Product.find_or_404(product_id)
     message = product.serialize()
     return make_response(jsonify(message), status.HTTP_200_OK)
+
+######################################################################
+# LIST PRODUCTS OF A WISHLIST
+######################################################################
+@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
+def list_items_wishlists(wishlist_id):
+    """Returns all of items of a wishlist"""
+    app.logger.info("Request for Wishlist Products...")
+    wishlist = Wishlist.find_or_404(wishlist_id)
+    results = [product.serialize() for product in wishlist.products]
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
 
 # ######################################################################
 # # UPDATE AN ADDRESS

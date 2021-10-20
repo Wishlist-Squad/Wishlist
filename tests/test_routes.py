@@ -83,6 +83,23 @@ class TestWishlistsServer(unittest.TestCase):
             wishlists.append(test_wishlist)
         return wishlists
 
+    def test_wishlist_repr(self):
+        """Wishlist repr"""
+        wishlist = WishlistFactory()
+        wishlist.id = 1
+        wishlist.customer_id = 2
+        wishlist.name = "new name"
+        repr_str = "<Wishlist %r id=[%s] customer=[%s]>" % ("new name", 1, 2)
+        self.assertEqual(wishlist.__repr__(), repr_str)
+
+    def test_product_repr(self):
+        """Product repr"""
+        product = ProductFactory()
+        product.id = 1
+        product.name = "new name"
+        repr_str = "<Product %r id=[%s]>" % ("new name", 1)
+        self.assertEqual(product.__repr__(), repr_str)
+
     def test_index(self):
         """Test the Home Page"""
         resp = self.app.get("/")
@@ -245,20 +262,22 @@ class TestWishlistsServer(unittest.TestCase):
 
 # QUERY
 
-    # def test_query_pet_list_by_category(self):
-    #     """Query Pets by Category"""
-    #     pets = self._create_pets(10)
-    #     test_category = pets[0].category
-    #     category_pets = [pet for pet in pets if pet.category == test_category]
-    #     resp = self.app.get(
-    #         BASE_URL, query_string="category={}".format(quote_plus(test_category))
-    #     )
-    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
-    #     data = resp.get_json()
-    #     self.assertEqual(len(data), len(category_pets))
-    #     # check the data just to be sure
-    #     for pet in data:
-    #         self.assertEqual(pet["category"], test_category)
+    def test_query_wishlist_list_by_customer(self):
+        """Query Wishlists by Customer"""
+        wishlists = self._create_wishlists(10)
+        test_customer_id = wishlists[0].customer_id
+        customer_id_wishlists = [
+            wishlist for wishlist in wishlists if wishlist.customer_id == test_customer_id]
+        resp = self.app.get(
+            BASE_URL, query_string="customer_id={}".format(
+                quote_plus(str(test_customer_id)))
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        data = resp.get_json()
+        self.assertEqual(len(data), len(customer_id_wishlists))
+        # check the data just to be sure
+        for wishlist in data:
+            self.assertEqual(wishlist["customer_id"], test_customer_id)
 
     # @patch('service.routes.Pet.find_by_name')
     # def test_bad_request(self, bad_request_mock):
@@ -353,3 +372,36 @@ class TestWishlistsServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
+# GET ITEM LIST FROM WISHLIST
+
+    def test_get_product_list(self):
+        """ Get a list of Products """
+        # add two products to wishlist
+        test_wishlist = self._create_wishlists(1)[0]
+        product_list = ProductFactory.create_batch(2)
+
+        # Create product 1
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product_list[0].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # Create product 2
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product_list[1].serialize(), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
+
+        # get the list back and make sure there are 2
+        resp = self.app.get(
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+
+        data = resp.get_json()
+        self.assertEqual(len(data), 2)
