@@ -231,33 +231,42 @@ def create_item(wishlist_id):
 def delete_products(wishlist_id, product_id):
     """
     Delete an Product
-    This endpoint returns a success or fail message
     """
-    app.logger.info("Request to delete an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
-    check_content_type("application/json")
-    wishlist = Wishlist.find(wishlist_id)
-    if not wishlist:
-        raise NotFound("Wishlist with id '{}' was not found.".format(wishlist_id))
-    product = Product.find_or_404(product_id)
-    product.deserialize(request.get_json())
-    product.delete()
-    app.logger.info("the item with id %s was deleted from wishlist %s.",product_id, wishlist_id)
-    wishlist.save()
-    message = product.serialize()
-    return make_response(jsonify(message), status.HTTP_204_NO_CONTENT)
+    app.logger.info(
+        "Request to delete product with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    product = Product.find(product_id)
+    if product:
+        product.delete()
+    return make_response("", status.HTTP_204_NO_CONTENT)
 
-
+# ######################################################################
+# # DELETE AN ADDRESS
+# ######################################################################
+# @app.route("/accounts/<int:account_id>/addresses/<int:address_id>", methods=["DELETE"])
+# def delete_addresses(account_id, address_id):
+#     """
+#     Delete an Address
+#     This endpoint will delete an Address based the id specified in the path
+#     """
+#     app.logger.info("Request to delete account with id: %s", account_id)
+#     address = Address.find(address_id)
+#     if address:
+#         address.delete()
+#     return make_response("", status.HTTP_204_NO_CONTENT)
 
 # ######################################################################
 # # RETRIEVE AN ITEM FROM WISHLIST
 # ######################################################################
+
+
 @app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['GET'])
 def get_products(wishlist_id, product_id):
     """
     Get an Product
     This endpoint returns just an product
     """
-    app.logger.info("Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    app.logger.info(
+        "Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
     wishlist = Wishlist.find_or_404(wishlist_id)
     product = Product.find_or_404(product_id)
     message = product.serialize()
@@ -266,6 +275,8 @@ def get_products(wishlist_id, product_id):
 ######################################################################
 # LIST PRODUCTS OF A WISHLIST
 ######################################################################
+
+
 @app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
 def list_items_wishlists(wishlist_id):
     """Returns all of items of a wishlist"""
