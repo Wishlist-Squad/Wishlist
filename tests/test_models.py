@@ -179,6 +179,7 @@ class TestWishlist(unittest.TestCase):
         products = serial_wishlist['products']
         self.assertEqual(products[0]['id'], product.id)
         self.assertEqual(products[0]['name'], product.name)
+        self.assertEqual(products[0]['product_id'], product.product_id)
         self.assertEqual(products[0]['wishlist_id'], product.wishlist_id)
 
     def test_deserialize_an_wishlist(self):

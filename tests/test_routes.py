@@ -327,11 +327,11 @@ class TestWishlistsServer(unittest.TestCase):
 
         data = resp.get_json()
         logging.debug(data)
-        product_id = data["id"]
+        product_wl_id = data["id"]
 
         # retrieve it back
         resp = self.app.get(
-            "/wishlists/{}/items/{}".format(test_wishlist.id, product_id), 
+            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id), 
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
@@ -355,19 +355,19 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         data = resp.get_json()
         logging.debug(data)
-        product_id = data["id"]
+        product_wl_id = data["id"]
 
 
         # send delete request
         resp = self.app.delete(
-            "/wishlists/{}/items/{}".format(test_wishlist.id, product_id),
+            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id),
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_204_NO_CONTENT)
 
         # retrieve it back and make sure address is not there
         resp = self.app.get(
-            "/wishlists/{}/items/{}".format(test_wishlist.id, product_id), 
+            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id), 
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
