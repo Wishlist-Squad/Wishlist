@@ -104,6 +104,7 @@ class Product(db.Model, PersistentBase):
     id = db.Column(db.Integer, primary_key=True)
     wishlist_id = db.Column(
         db.Integer, db.ForeignKey('wishlist.id'), nullable=False)
+    product_id = db.Column(db.Integer)
     name = db.Column(db.String(128))
 
     def __repr__(self):
@@ -113,8 +114,9 @@ class Product(db.Model, PersistentBase):
         """ Serializes a Product into a dictionary """
         return {
             "id": self.id,
-            "name": self.name,
-            "wishlist_id": self.wishlist_id
+            "wishlist_id": self.wishlist_id,
+            "product_id": self.product_id,
+            "name": self.name
         }
 
     def deserialize(self, data):
@@ -126,6 +128,7 @@ class Product(db.Model, PersistentBase):
         try:
             self.id = data["id"]
             self.wishlist_id = data["wishlist_id"]
+            self.product_id = data["product_id"]
             self.name = data["name"]
         except KeyError as error:
             raise DataValidationError(
