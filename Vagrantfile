@@ -42,7 +42,7 @@ Vagrant.configure(2) do |config|
     docker.privileged = true
     docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:ro"]
     # Uncomment to force arm64 for testing images on Intel
-    # docker.create_args = ["--platform=linux/arm64"]     
+    docker.create_args = ["--platform=linux/amd64"]     
   end
 
   ######################################################################
@@ -62,6 +62,11 @@ Vagrant.configure(2) do |config|
   # Copy your ~/.vimrc file so that vi looks the same
   if File.exists?(File.expand_path("~/.vimrc"))
     config.vm.provision "file", source: "~/.vimrc", destination: "~/.vimrc"
+  end
+
+  # Copy your IBM Cloud API Key if you have one
+  if File.exists?(File.expand_path("~/.bluemix/apikey.json"))
+    config.vm.provision "file", source: "~/.bluemix/apikey.json", destination: "~/.bluemix/apikey.json"
   end
 
   ############################################################
@@ -103,11 +108,41 @@ Vagrant.configure(2) do |config|
   ######################################################################
   config.vm.provision "shell", inline: <<-SHELL
     # Create testdb database using postgres cli
-    echo "Pausing for 60 seconds to allow PostgreSQL to initialize..."
-    sleep 60
+    echo "Pausing for 20 seconds to allow PostgreSQL to initialize..."
+    sleep 20
     echo "Creating test database"
+    docker exec postgres psql -c "drop database testdb;" -U postgres
     docker exec postgres psql -c "create database testdb;" -U postgres
     # Done
+  SHELL
+
+  #####################################################################
+  # Setup a Bluemix and Kubernetes environment
+  ######################################################################
+  config.vm.provision "shell", inline: <<-SHELL
+    echo "\n************************************"
+    echo " Installing IBM Cloud CLI..."
+    echo "************************************\n"
+    # Install IBM Cloud CLI as Vagrant user
+    sudo -H -u vagrant sh -c '
+    curl -fsSL https://clis.cloud.ibm.com/install/linux | sh && \
+    ibmcloud cf install && \
+    echo "alias ic=ibmcloud" >> ~/.bashrc
+    '
+
+    # Show completion instructions
+    sudo -H -u vagrant sh -c "echo alias ic=/usr/local/bin/ibmcloud >> ~/.bash_aliases"
+    echo "\n************************************"
+    echo "If you have an IBM Cloud API key in ~/.bluemix/apiKey.json"
+    echo "You can login with the following command:"
+    echo "\n"
+    echo "ibmcloud login -a https://cloud.ibm.com --apikey @~/.bluemix/apikey.json -r us-south"
+    echo "ibmcloud target --cf -o <your_org_here> -s dev"
+    echo "\n************************************"
+    # Show the GUI URL for Couch DB
+    echo "\n"
+    echo "CouchDB Admin GUI can be found at:\n"
+    echo "http://127.0.0.1:5984/_utils"
   SHELL
 
 end
