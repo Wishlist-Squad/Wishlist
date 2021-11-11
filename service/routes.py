@@ -271,6 +271,29 @@ def list_items_wishlists(wishlist_id):
     results = [product.serialize() for product in wishlist.products]
     return make_response(jsonify(results), status.HTTP_200_OK)
 
+# ######################################################################
+# # PURCHASE AN ITEM FROM WISHLIST
+# ######################################################################
+@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>/purchase', methods=['PUT'])
+def purchase_products(wishlist_id, product_id):
+    """
+    Purchase an Product
+    This endpoint returns just an product
+    """
+    app.logger.info(
+        "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
+    product = Product.find_or_404(product_id)
+    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
+    wishlist = Wishlist.find_or_404(wishlist_id)
+    results = [product.serialize() for product in wishlist.products]
+    if product.purchased == True :
+        return make_response(jsonify(results), status.HTTP_400_BAD_REQUEST)
+    product.purchased = True
+    product.save()
+    return make_response(jsonify(results), status.HTTP_200_OK)
+
+
+
 ######################################################################
 #  U T I L I T Y   F U N C T I O N S
 ######################################################################

@@ -372,8 +372,38 @@ class TestWishlistsServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-# GET ITEM LIST FROM WISHLIST
+# PURCHASE ITEM  FROM WISHLIST
+    def test_purchase_product(self):
+        """ Purchase a product from a wishlist """
+        test_wishlist = self._create_wishlists(1)[0]
+        product = ProductFactory()
+        resp = self.app.post(
+            "/wishlists/{}/items".format(test_wishlist.id),
+            json=product.serialize(),
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
+        data = resp.get_json()
+        logging.debug(data)
+        product_wl_id = data["id"]
+        
+        # send purchase request
+        resp = self.app.put(
+            "/wishlists/{}/items/{}/purchase".format(test_wishlist.id, product_wl_id),
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code,  status.HTTP_200_OK)
+
+        # retrieve it back and make sure address is not there
+        resp = self.app.get(
+            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id), 
+            content_type="application/json"
+        )
+        purchased_product = resp.get_json()
+        self.assertEqual(purchased_product["purchased"], True, "products does not match")
+
+# GET ITEM LIST FROM WISHLIST
     def test_get_product_list(self):
         """ Get a list of Products """
         # add two products to wishlist
@@ -405,3 +435,5 @@ class TestWishlistsServer(unittest.TestCase):
 
         data = resp.get_json()
         self.assertEqual(len(data), 2)
+        
+
