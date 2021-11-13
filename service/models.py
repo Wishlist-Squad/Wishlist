@@ -106,6 +106,7 @@ class Product(db.Model, PersistentBase):
         db.Integer, db.ForeignKey('wishlist.id'), nullable=False)
     product_id = db.Column(db.Integer)
     name = db.Column(db.String(128))
+    purchased = db.Column(db.Boolean, default=False)
 
     def __repr__(self):
         return "<Product %r id=[%s]>" % (self.name, self.id)
@@ -116,7 +117,8 @@ class Product(db.Model, PersistentBase):
             "id": self.id,
             "wishlist_id": self.wishlist_id,
             "product_id": self.product_id,
-            "name": self.name
+            "name": self.name,
+            "purchased": self.purchased
         }
 
     def deserialize(self, data):
@@ -130,6 +132,7 @@ class Product(db.Model, PersistentBase):
             self.wishlist_id = data["wishlist_id"]
             self.product_id = data["product_id"]
             self.name = data["name"]
+            self.purchased = data["purchased"]
         except KeyError as error:
             raise DataValidationError(
                 "Invalid Product: missing " + error.args[0])
