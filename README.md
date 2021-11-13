@@ -81,7 +81,7 @@ The project uses *honcho* which gets it's commands from the `Procfile`. To start
 $ honcho start
 ```
 
-You should be able to reach the service at: http://localhost:5000
+You should be able to reach the service at: http://localhost:8080
 
 ## Manually running the Tests
 
