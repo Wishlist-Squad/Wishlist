@@ -100,12 +100,12 @@ class TestWishlistsServer(unittest.TestCase):
         repr_str = "<Product %r id=[%s]>" % ("new name", 1)
         self.assertEqual(product.__repr__(), repr_str)
 
-    def test_index(self):
-        """Test the Home Page"""
-        resp = self.app.get("/")
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        data = resp.get_json()
-        self.assertEqual(data["name"], "Wishlist Demo REST API Service")
+    # def test_index(self):
+    #     """Test the Home Page"""
+    #     resp = self.app.get("/")
+    #     self.assertEqual(resp.status_code, status.HTTP_200_OK)
+    #     data = resp.get_json()
+    #     self.assertEqual(data["name"], "Wishlist Demo REST API Service")
 
 
 # LIST
