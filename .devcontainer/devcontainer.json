@@ -18,6 +18,6 @@
 		"bbenoist.vagrant",
 		"sonarsource.sonarlint-vscode"
 	],
-	"forwardPorts": [5000],
+	"forwardPorts": [8080],
 	//"postCreateCommand": "sudo pip install -U pip wheel && sudo pip install -r requirements.txt"
 }

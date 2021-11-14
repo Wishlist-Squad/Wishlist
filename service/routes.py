@@ -42,21 +42,26 @@ from . import app
 ######################################################################
 # GET INDEX
 ######################################################################
-
-
 @app.route("/")
 def index():
-    """Root URL response"""
     app.logger.info("Request for Root URL")
-    return (
-        jsonify(
-            name="Wishlist Demo REST API Service",
-            version="1.0",
-            paths=url_for("list_wishlists", _external=True),
-        ),
-        status.HTTP_200_OK,
-    )
+    # data = '{name: <string>, category: <string>}'
+    # url = request.base_url + 'pets' # url_for('list_pets')
+    # return jsonify(name='Pet Demo REST API Service', version='1.0', url=url, data=data), status.HTTP_200_OK
+    return app.send_static_file("index.html")
 
+# @app.route("/")
+# def index():
+#     """Root URL response"""
+#     app.logger.info("Request for Root URL")
+#     return (
+#         jsonify(
+#             name="Wishlist Demo REST API Service",
+#             version="1.0",
+#             paths=url_for("list_wishlists", _external=True),
+#         ),
+#         status.HTTP_200_OK,
+#     )
 
 ######################################################################
 # LIST ALL PETS

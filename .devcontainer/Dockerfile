@@ -20,7 +20,7 @@ COPY requirements.txt .
 RUN apt-get install -y gcc libpq-dev \
     && pip install -U pip wheel \
     && pip install -r requirements.txt
-EXPOSE 5000
+EXPOSE 8080
 
 # Create a user for development
 ARG USERNAME=devops
