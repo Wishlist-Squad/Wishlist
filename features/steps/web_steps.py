@@ -30,7 +30,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support import expected_conditions
 
-ID_PREFIX = 'pet_'
+ID_PREFIX = 'wishlist_'
 
 @when('I visit the "home page"')
 def step_impl(context):
@@ -48,6 +48,28 @@ def step_impl(context, message):
 def step_impl(context, message):
     error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
     ensure(message in context.resp.text, False, error_msg)
+
+@when(u'I set the "{element_name}" field to "{message}"')
+def step_impl(context,element_name,message):
+    element_id = ID_PREFIX + element_name.lower()
+    element = context.driver.find_element_by_id(element_id)
+    element.clear()
+    element.send_keys(int(message))
+
+@when(u'I press the "delete" button')
+def step_impl(context):
+    button_id = "delete" + '-btn'
+    context.driver.find_element_by_id(button_id).click()
+    
+@then(u'I should see the message "Wishlist has been Deleted!"')
+def step_impl(context):
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            "Wishlist has been Deleted!"
+        )
+    )
+    expect(found).to_be(True)
 
 '''
 @when('I set the "{element_name}" to "{text_string}"')
