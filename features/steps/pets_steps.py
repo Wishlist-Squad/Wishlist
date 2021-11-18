@@ -27,6 +27,28 @@ import requests
 from behave import given
 from compare import expect
 
+@given("the following wishlists")
+def step_impl(context):
+    headers = {'Content-Type': 'application/json'}
+    # list all of the pets and delete them one by one
+    context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
+    expect(context.resp.status_code).to_equal(200)
+    for wishlist in context.resp.json():
+        context.resp = requests.delete(context.base_url + '/wishlists/' + str(wishlist["_id"]), headers=headers)
+        expect(context.resp.status_code).to_equal(204)
+    
+    # load the database with new wishlists
+    create_url = context.base_url + '/wishlists'
+    for row in context.table:
+        # data = {
+        #     "customer_id": row["customer_id"],
+        #     "name": row['name']
+        #     }
+        data = {}
+        payload = json.dumps(data)
+        context.resp = requests.post(create_url, data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)
+
 # @given('the following pets')
 # def step_impl(context):
 #     """ Delete all Pets and load new ones """

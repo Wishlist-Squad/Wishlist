@@ -15,6 +15,12 @@ Scenario: The server is running
     Then I should see "Wishlist RESTful Service" in the title
     # And I should not see "404 Not Found" #TODO problem with context.resp attribute (will fix later)
 
+Scenario: Delete a wishlist
+    When I visit the "Home Page"
+    And I set the "id" field to "1"
+    And I press the "delete" button
+    Then I should see the message "Wishlist has been Deleted!"
+
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "Happy"
