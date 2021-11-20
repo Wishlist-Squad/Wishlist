@@ -128,7 +128,6 @@ class Product(db.Model, PersistentBase):
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.id = data["id"]
             self.wishlist_id = data["wishlist_id"]
             self.product_id = data["product_id"]
             self.name = data["name"]
@@ -181,7 +180,6 @@ class Wishlist(db.Model, PersistentBase):
             data (dict): A dictionary containing the resource data
         """
         try:
-            # self.id = data["id"]
             self.name = data["name"]
             self.customer_id = data["customer_id"]
             product_list = data.get("products")
