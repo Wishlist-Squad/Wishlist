@@ -11,8 +11,8 @@ Vagrant.configure(2) do |config|
   config.vm.hostname = "ubuntu"
 
   # set up network ip and port forwarding
-  config.vm.network "forwarded_port", guest: 5050, host: 5050, host_ip: "127.0.0.1"
-  config.vm.network "private_network", ip: "192.168.33.10"
+  config.vm.network "forwarded_port", guest: 8080, host: 8080, host_ip: "127.0.0.1"
+  config.vm.network "private_network", ip: "192.168.56.10"
 
   # Windows users need to change the permission of files and directories
   # so that nosetests runs without extra arguments.
@@ -36,13 +36,13 @@ Vagrant.configure(2) do |config|
   ############################################################
   config.vm.provider :docker do |docker, override|
     override.vm.box = nil
-    docker.image = "rofrano/vagrant-provider:ubuntu"
+    docker.image = "rofrano/vagrant-provider:debian"
     docker.remains_running = true
     docker.has_ssh = true
     docker.privileged = true
     docker.volumes = ["/sys/fs/cgroup:/sys/fs/cgroup:ro"]
     # Uncomment to force arm64 for testing images on Intel
-    docker.create_args = ["--platform=linux/amd64"]     
+    # docker.create_args = ["--platform=linux/amd64"]     
   end
 
   ######################################################################
@@ -76,7 +76,7 @@ Vagrant.configure(2) do |config|
     echo "****************************************"
     echo " INSTALLING PYTHON 3 ENVIRONMENT..."
     echo "****************************************"
-    # Install Python 3 and dev tools 
+    Install Python 3 and dev tools 
     apt-get update
     apt-get install -y git tree wget vim python3-dev python3-pip python3-venv apt-transport-https python3-selenium
     apt-get -y autoremove
