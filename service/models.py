@@ -194,7 +194,7 @@ class Wishlist(db.Model, PersistentBase):
                 "Invalid Wishlist: missing " + error.args[0])
         except TypeError as error:
             raise DataValidationError(
-                "Invalid Wishlist: body of request contained" "bad or no data"
+                "Invalid Wishlist: body of request contained bad or no data"
             )
         return self
 
