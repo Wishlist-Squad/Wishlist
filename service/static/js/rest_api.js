@@ -56,7 +56,7 @@ $(function () {
 
         ajax.done(function(res){
             update_form_data(res)
-            flash_message(`Success: wishlist ${wishlist_id} has been created`)
+            flash_message(`Success: wishlist ${res.id} has been created`)
         });
 
         ajax.fail(function(res){
@@ -193,26 +193,59 @@ $(function () {
 
         ajax.done(function(res){
             //alert(res.toSource())
-            console.log(res)
             $("#search_results").empty();
-            $("#search_results").append('<table class="table-striped" cellpadding="10">');
-            var header = '<tr>'
-            header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">Name</th>'
-            header += '<th style="width:40%">Customer ID</th>'
-            header += '</tr>'
-            $("#search_results").append(header);
+            var table = '<table class="table-striped">';
+            var header = `
+                <thead>
+                    <tr>
+                        <th class="col-md-1">ID</th>
+                        <th class="col-md-2">Customer ID</th>
+                        <th class="col-md-3">Name</th>
+                        <th class="col-md-1">Item ID</th>
+                        <th class="col-md-2">Product ID</th>
+                        <th class="col-md-3">Product Name</th>
+                    </tr>
+                </thead>
+            `;
+            table += header;
+            body = "<tbody>";
             var firstWishlist = "";
-            for(var i = 0; i < res.length; i++) {
+            for(var i = 0; i < res.length; i += 1) {
                 var wishlist = res[i];
-                var row = "<tr><td>"+wishlist.id+"</td><td>"+wishlist.name+"</td><td>"+wishlist.customer_id+"</td></tr>";
-                $("#search_results").append(row);
+                var row = "<tr>";
+                // append wishlist data
+                row += `<td class="col-md-1">${wishlist.id}</td>`;
+                row += `<td class="col-md-2">${wishlist.customer_id}</td>`;
+                row += `<td class="col-md-3">${wishlist.name}</td>`;
+                // append product data
+                var padding = "";
+                for (var j = 1; j <= 3; ++j)
+                    padding += `<td class="col-md-${j}"></td>`;
+                if (wishlist.products.length === 0) {
+                    row += padding;
+                    row += `</tr>`;
+                } else {
+                    for (var k = 0; k < wishlist.products.length; ++k) {
+                        if (k > 0) row += `<tr>` + padding;
+                        var product = wishlist.products[k];
+                        row += `<td class="col-md-1">${product.id}</td>`;
+                        row += `<td class="col-md-2">${product.product_id}</td>`;
+                        row += `<td class="col-md-3">${product.name}</td>`;
+                        row += `</tr>`;
+
+                    }
+                }
+
+                body += row;
                 if (i == 0) {
                     firstWishlist = wishlist;
                 }
+
             }
 
-            $("#search_results").append('</table>');
+            body += '</tbody>';
+            table += body;
+            $("#search_results").append(table);
 
             // copy the first result to the form
             if (firstWishlist != "") {
@@ -273,8 +306,6 @@ $(function () {
     // ****************************************
 
     $("#create-item-btn").click(function () {
-        console.log("adding an item")
-
         var wishlist_id = $("#item_wishlist_id").val();
         var product_id = $("#product_id").val();
         var name = $("#product_name").val();
@@ -352,7 +383,6 @@ $(function () {
 
         ajax.done(function(res){
             //alert(res.toSource())
-            console.log(res)
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
