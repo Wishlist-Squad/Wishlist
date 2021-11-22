@@ -3,17 +3,17 @@ Feature: The wishlist service back-end
     I need a RESTful catalog service
     So that my customers can keep track of the items they want to buy
 
-# Background:
-#     Given the following pets
-#         | name       | category | available |
-#         | fido       | dog      | True      |
-#         | kitty      | cat      | True      |
-#         | leo        | lion     | False     |
+Background:
+    Given the following wishlists
+        | name       | customer_id |
+        | christmas  | 111         |
+        | myself     | 222         |
+        | Joey       | 111         |
 
 Scenario: The server is running
     When I visit the "Home Page"
     Then I should see "Wishlist RESTful Service" in the title
-    # And I should not see "404 Not Found" #TODO problem with context.resp attribute (will fix later)
+    And I should not see "404 Not Found"
 
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
