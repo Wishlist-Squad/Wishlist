@@ -62,17 +62,73 @@
           </div> <!-- form div -->
         </div>
 
+        <!-- <div class="col-md-12" id="item_form_data"> -->
+          Create, Retrieve, Update, and Delete an Item in a Wishlist:
+          <div class="well">
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="item_id">Item ID:</label>
+                <div class="col-sm-6">
+                  <input type="text" class="form-control" id="item_id" placeholder="Enter ID of Item">
+                </div>
+                <div class="col-sm-4">
+                  <button type="submit" class="btn btn-primary" id="retrieve-item-btn">Retrieve</button>
+                  <button type="submit" class="btn btn-danger" id="delete-item-btn">Delete</button>
+                </div>
+              </div>
+            </div> <!-- form div -->
+
+            <div class="form-horizontal">
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="item_wishlist_id">Wishlist ID:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="item_wishlist_id" placeholder="Enter associated Wishlist's ID">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="product_id">Product ID:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="product_id" placeholder="Enter Product's ID">
+                </div>
+              </div>
+              <div class="form-group">
+                <label class="control-label col-sm-2" for="product_name">Name:</label>
+                <div class="col-sm-10">
+                  <input type="text" class="form-control" id="product_name" placeholder="Enter name for Product">
+                </div>
+              </div>
+              <div class="form-group">
+                <div class="col-sm-offset-2 col-sm-10">
+                  <button type="submit" class="btn btn-primary" id="search-btn">Search</button>
+                  <button type="submit" class="btn btn-primary" id="clear-btn">Clear</button>
+                  <button type="submit" class="btn btn-success" id="create-btn">Create</button>
+                </div>
+              </div>
+          </div> <!-- form div -->
+        </div>
+
         <!-- Search Results -->
         <div class="table-responsive col-md-12" id="search_results">
-          <table class="table-striped">
-            <thead>
-            <tr>
-                <th class="col-md-1">ID</th>
-                <th class="col-md-4">Name</th>
-                <th class="col-md-4">Customer ID</th>
-            </tr>
-            </thead>
-          </table>
+          <div class="table-container col-md-12">
+            <table class="table-striped col-md-5">
+              <thead>
+                <tr>
+                  <th class="col-md-1">ID</th>
+                  <th class="col-md-3">Name</th>
+                  <th class="col-md-1">Customer ID</th>
+                </tr>
+              </thead>
+            </table>
+            <table class="table-striped col-md-7">
+              <thead>
+                <tr>
+                  <th class="col-md-1">Item ID</th>
+                  <th class="col-md-1">Product ID</th>
+                  <th class="col-md-3">Product Name</th>
+                </tr>
+              </thead>
+            </table>
+          </div>
         </div>
 
         <footer>
