@@ -196,6 +196,11 @@ class Wishlist(db.Model, PersistentBase):
             )
         return self
 
+    def delete(self):
+        for product in self.products:
+            product.delete()
+        super(self.__class__, self).delete()
+
     @classmethod
     def find_by_name(cls, name):
         """ Returns all Accounts with the given name
