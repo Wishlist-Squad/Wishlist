@@ -49,6 +49,57 @@ def step_impl(context, message):
     error_msg = "I should not see '%s' in '%s'" % (message, context.resp.text)
     ensure(message in context.resp.text, False, error_msg)
 
+@when('I set "{element_name}" to "{text_string}"')
+def step_impl(context,element_name,text_string):
+    element_id = ID_PREFIX + element_name
+    element = context.driver.find_element_by_id(element_id)
+    element.clear()
+    element.send_keys(text_string)
+
+@when('I press the "{button}" button')
+def step_impl(context,button):
+    button_id = button.lower() + '-btn'
+    context.driver.find_element_by_id(button_id).click()
+
+@then('I should see "{text_string}" in the "{element_name}" field')
+def step_impl(context,text_string,element_name):
+    element_id = ID_PREFIX + element_name.lower()
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element_value(
+            (By.ID, element_id),
+            text_string
+        )
+    )
+    expect(found).to_be(True)
+
+@when('I copy the "{element_name}" field')
+def step_impl(context,element_name):
+    element_id = ID_PREFIX + element_name.lower()
+    element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    context.clipboard = element.get_attribute('value')
+    logging.info('Clipboard contains: %s', context.clipboard)
+
+@when('I paste the "{element_name}" field')
+def step_impl(context,element_name):
+    element_id = ID_PREFIX + element_name.lower()
+    element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    element.clear()
+    element.send_keys(context.clipboard)
+
+@then('I should see "" in the "Name" field')
+def step_impl(context):
+    element_id = ID_PREFIX + "Name".lower()
+    element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.presence_of_element_located((By.ID, element_id))
+    )
+    context.clipboard = element.get_attribute('value')
+    logging.info('Clipboard contains: %s', context.clipboard)
+
+
 '''
 @when('I set the "{element_name}" to "{text_string}"')
 def step_impl(context, element_name, text_string):
