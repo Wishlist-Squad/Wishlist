@@ -15,6 +15,20 @@ Scenario: The server is running
     Then I should see "Wishlist RESTful Service" in the title
     And I should not see "404 Not Found"
 
+Scenario: Deleting a wishlist
+    When I visit the "Home Page"
+    And I set "customer_id" to "222"
+    And I press the "Search" button
+    Then I should see "myself" in the "Name" field
+    And I should see "222" in the "customer_id" field
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Delete" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "" in the "Name" field
+
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "Happy"
