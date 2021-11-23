@@ -31,8 +31,8 @@ Scenario: Deleting a wishlist
 
 Scenario: Create a wishlist
     When I visit the "Home Page"
-    And I set the "Name" to "ThanksGiving"
-    And I set the "customer_id" to "222"
+    And I set "Name" to "ThanksGiving"
+    And I set "customer_id" to "222"
     And I press the "Create" button
     Then I should see the message "Success"
     When I copy the "Id" field
