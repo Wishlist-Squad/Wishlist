@@ -29,6 +29,14 @@ Scenario: Deleting a wishlist
     And I press the "Retrieve" button
     Then I should see "" in the "Name" field
 
+ Scenario: List all wishlists
+    When I visit the "Home Page"
+    And I press the "Search" button
+    Then I should see "christmas" in the results
+    And I should see "Joey" in the results
+    And I should see "myself" in the results
+    And I should not see "television" in the results
+
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "Happy"
@@ -47,12 +55,6 @@ Scenario: Deleting a wishlist
 #     And I should see "Hippo" in the "Category" field
 #     And I should see "False" in the "Available" dropdown
 
-# Scenario: List all pets
-#     When I visit the "Home Page"
-#     And I press the "Search" button
-#     Then I should see "fido" in the results
-#     And I should see "kitty" in the results
-#     And I should not see "leo" in the results
 
 # Scenario: Search all dogs
 #     When I visit the "Home Page"
