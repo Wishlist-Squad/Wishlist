@@ -9,6 +9,13 @@ Background:
         | christmas  | 111         |
         | myself     | 222         |
         | Joey       | 111         |
+    And the following items in the wishlists
+        | wishlist_index | product_id | product_name  | purchased |
+        | 0              | 1          | iphone        | False     |
+        | 0              | 2          | Mac Pro       | True      |
+        | 1              | 3          | Cat Bed       | True      |
+        | 2              | 4          | Monopoly      | False     |
+        | 2              | 5          | Ninja Turtles | False     |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -28,6 +35,28 @@ Scenario: Deleting a wishlist
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see "" in the "Name" field
+
+Scenario: Adding an Item to a Wishlist
+    When I visit the "Home Page"
+    And I press the "Search" button
+    And I copy the "Id" field
+    And I paste the "wishlist_id" field in the item form
+    And I set "product_id" to "999" in the item form
+    And I set "product_name" to "table" in the item form
+    And I press the "Create" button in the item form
+    Then I should see the message "Success"
+    When I store the item id
+    And I copy the "wishlist_id" field in the item form
+    And I press the "Clear" button in the item form
+    Then the "Id" field should be empty in the item form
+    And the "wishlist_id" field should be empty in the item form
+    And the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Retrieve" button in the item form
+    Then I should see "999" in the "product_id" field in the item form
+    And I should see "table" in the "product_name" field in the item form
 
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
