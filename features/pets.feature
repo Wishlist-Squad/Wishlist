@@ -34,7 +34,19 @@ Scenario: Deleting a wishlist
     And I press the "Delete" button
     And I paste the "Id" field
     And I press the "Retrieve" button
-    Then I should see "" in the "Name" field
+    Then the "Name" field should be empty
+
+Scenario: Retrieving a wishlist
+    When I visit the "Home Page"
+    And I set "customer_id" to "222"
+    And I press the "Search" button
+    Then I should see "myself" in the "Name" field
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "222" in the "customer_id" field
+    And I should see "myself" in the "name" field
 
 Scenario: Adding an Item to a Wishlist
     When I visit the "Home Page"
