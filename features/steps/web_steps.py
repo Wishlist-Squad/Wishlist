@@ -179,7 +179,7 @@ def step_impl(context, text_string, element_name):
         expected_conditions.presence_of_element_located((By.ID, element_id))
     )
     value = element.get_attribute('value')
-    expect(value).to_be(text_string)
+    expect(value == text_string).to_be(True)
 
 '''
 @when('I set the "{element_name}" to "{text_string}"')
