@@ -295,8 +295,39 @@ $(function () {
         });
 
         ajax.fail(function(res){
-            flash_message(res.responseJSON.message)
+            var msg = "You need a product id, product name and valid wishlsit id, ERROR: "
+            flash_message(msg + res.responseJSON.message)
         });
+    });
+
+    // ****************************************
+    // Retrieve an Item from a Wishlist
+    // ****************************************
+
+    $("#retrieve-item-btn").click(function () {
+
+        var item_id = $("#item_id").val();
+        var wishlist_id = $("#item_wishlist_id").val();
+
+        var ajax = $.ajax({
+            type: "GET",
+            url: `/wishlists/${wishlist_id}/items/${item_id}`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            update_item_form_data(res)
+            flash_message("Success")
+        });
+
+        ajax.fail(function(res){
+            clear_item_data_fields();
+            var msg = "Make sure you are inputting the item id AND the wishlist id, ERROR: "
+            flash_message(msg + res.responseJSON.message)
+        });
+
     });
 
 })
