@@ -326,7 +326,7 @@ $(function () {
 
         ajax.done(function(res){
             update_item_form_data(res)
-            flash_message(`Success`)
+            flash_message(`Success: created a item with id ${res.id} in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -408,7 +408,7 @@ $(function () {
                 update_item_form_data(firstItem)
             }
 
-            flash_message(`Success`)
+            flash_message(`Success: found items in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
