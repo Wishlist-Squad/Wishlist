@@ -78,7 +78,18 @@ Scenario: Adding an Item to a Wishlist
     And I should see "myself" in the results
     And I should not see "television" in the results
 
-
+Scenario: Create a wishlist
+    When I visit the "Home Page"
+    And I set "Name" to "ThanksGiving"
+    And I set "customer_id" to "222"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "ThanksGiving" in the "Name" field
+    
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "Happy"
