@@ -408,7 +408,7 @@ $(function () {
             if (firstItem != "") {
                 update_item_form_data(firstItem)
             }
-
+          
             flash_message(`Success: found items in wishlist ${wishlist_id}`)
         });
 
@@ -444,5 +444,4 @@ $(function () {
             flash_message("Server error!")
         });
     });
-
 })
