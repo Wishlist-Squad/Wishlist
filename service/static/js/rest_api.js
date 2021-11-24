@@ -240,14 +240,14 @@ $(function () {
     function update_item_form_data(res) {
         $("#item_id").val(res.id);
         $("#item_wishlist_id").val(res.wishlist_id);
-        $("#product_id").val(res.product_id);
-        $("#product_name").val(res.name);
+        $("#item_product_id").val(res.product_id);
+        $("#item_product_name").val(res.name);
     }
 
     function clear_item_data_fields() {
         $("#item_wishlist_id").val("");
-        $("#product_id").val("");
-        $("#product_name").val("");
+        $("#item_product_id").val("");
+        $("#item_product_name").val("");
     }
 
     function clear_item_id_field() {
@@ -276,8 +276,8 @@ $(function () {
         console.log("adding an item")
 
         var wishlist_id = $("#item_wishlist_id").val();
-        var product_id = $("#product_id").val();
-        var name = $("#product_name").val();
+        var product_id = $("#item_product_id").val();
+        var name = $("#item_product_name").val();
 
         var data = {
             wishlist_id,
