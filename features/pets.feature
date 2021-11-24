@@ -89,7 +89,16 @@ Scenario: Create a wishlist
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see "ThanksGiving" in the "Name" field
-    
+
+Scenario: Listing all items in a Wishlist
+    When I visit the "Home Page"
+    And I press the "Search" button
+    And I copy the "Id" field
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Search" button in the item form
+    Then I should see "1" in the "product_id" field in the item form
+    And I should see "iphone" in the "product_name" field in the item form
+
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
 #     And I set the "Name" to "Happy"
