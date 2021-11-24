@@ -128,7 +128,6 @@ class Product(db.Model, PersistentBase):
             data (dict): A dictionary containing the resource data
         """
         try:
-            self.id = data["id"]
             self.wishlist_id = data["wishlist_id"]
             self.product_id = data["product_id"]
             self.name = data["name"]
@@ -181,7 +180,6 @@ class Wishlist(db.Model, PersistentBase):
             data (dict): A dictionary containing the resource data
         """
         try:
-            # self.id = data["id"]
             self.name = data["name"]
             self.customer_id = data["customer_id"]
             product_list = data.get("products")
@@ -197,6 +195,11 @@ class Wishlist(db.Model, PersistentBase):
                 "Invalid Wishlist: body of request contained bad or no data"
             )
         return self
+
+    def delete(self):
+        for product in self.products:
+            product.delete()
+        super(self.__class__, self).delete()
 
     @classmethod
     def find_by_name(cls, name):

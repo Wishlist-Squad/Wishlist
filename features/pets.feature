@@ -9,6 +9,13 @@ Background:
         | christmas  | 111         |
         | myself     | 222         |
         | Joey       | 111         |
+    And the following items in the wishlists
+        | wishlist_index | product_id | product_name  | purchased |
+        | 0              | 1          | iphone        | False     |
+        | 0              | 2          | Mac Pro       | True      |
+        | 1              | 3          | Cat Bed       | True      |
+        | 2              | 4          | Monopoly      | False     |
+        | 2              | 5          | Ninja Turtles | False     |
 
 Scenario: The server is running
     When I visit the "Home Page"
@@ -41,6 +48,28 @@ Scenario: Retrieving a wishlist
     Then I should see "222" in the "customer_id" field
     And I should see "myself" in the "name" field
 
+Scenario: Adding an Item to a Wishlist
+    When I visit the "Home Page"
+    And I press the "Search" button
+    And I copy the "Id" field
+    And I paste the "wishlist_id" field in the item form
+    And I set "product_id" to "999" in the item form
+    And I set "product_name" to "table" in the item form
+    And I press the "Create" button in the item form
+    Then I should see the message "Success"
+    When I store the item id
+    And I copy the "wishlist_id" field in the item form
+    And I press the "Clear" button in the item form
+    Then the "Id" field should be empty in the item form
+    And the "wishlist_id" field should be empty in the item form
+    And the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Retrieve" button in the item form
+    Then I should see "999" in the "product_id" field in the item form
+    And I should see "table" in the "product_name" field in the item form
+
  Scenario: List all wishlists
     When I visit the "Home Page"
     And I press the "Search" button
@@ -61,7 +90,18 @@ Scenario: Create a wishlist
     And I press the "Retrieve" button
     Then I should see "ThanksGiving" in the "Name" field
     
-
+# Scenario: Create a Pet
+#     When I visit the "Home Page"
+#     And I set the "Name" to "Happy"
+#     And I set the "Category" to "Hippo"
+#     And I select "False" in the "Available" dropdown
+#     And I press the "Create" button
+#     Then I should see the message "Success"
+#     When I copy the "Id" field
+#     And I press the "Clear" button
+#     Then the "Id" field should be empty
+#     And the "Name" field should be empty
+#     And the "Category" field should be empty
 #     When I paste the "Id" field
 #     And I press the "Retrieve" button
 #     Then I should see "Happy" in the "Name" field

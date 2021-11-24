@@ -49,3 +49,27 @@ def step_impl(context):
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
         expect(context.resp.status_code).to_equal(201)
+
+@given('the following items in the wishlists')
+def step_impl(context):
+    """ Add items to the wishlists """
+    headers = {'Content-Type': 'application/json'}
+
+    # get all wishlists
+    context.resp = requests.get(context.base_url + '/wishlists', headers=headers)
+    expect(context.resp.status_code).to_equal(200)
+    wishlists = context.resp.json()
+    
+    # load the database with new wishlists
+    for row in context.table:
+        wishlist_id = wishlists[int(row['wishlist_index'])]["id"]
+        data = {
+            "wishlist_id": wishlist_id,
+            "product_id": row['product_id'],
+            "name": row['product_name'],
+            "purchased": row["purchased"] in ["True", "true"]
+            }
+        payload = json.dumps(data)
+        url = context.base_url + f"/wishlists/{wishlist_id}/items"
+        context.resp = requests.post(url, data=payload, headers=headers)
+        expect(context.resp.status_code).to_equal(201)
