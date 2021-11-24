@@ -56,10 +56,23 @@ Scenario: Deleting an item
     And I set "product_id" to "999" in the item form
     And I set "product_name" to "apple" in the item form
     And I press the "Create" button in the item form
-    And I set "product_id" to "999" in the item form
-    And I paste the "wishlist_id" field in the item form
-    And I press the "Delete" button in the item form    
     Then I should see the message "Success"
+    When I store the item id
+    And I copy the "wishlist_id" field in the item form
+    And I press the "Clear" button in the item form
+    Then the "Id" field should be empty in the item form
+    And the "wishlist_id" field should be empty in the item form
+    And the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Delete" button in the item form
+    Then I should see the message "Success"
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Retrieve" button in the item form
+    Then the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
 
 Scenario: Adding an Item to a Wishlist
     When I visit the "Home Page"
