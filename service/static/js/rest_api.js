@@ -79,6 +79,7 @@ $(function () {
         var data = {
             "name": name,
             "customer_id": customer_id,
+            "products": []
         };
 
         var ajax = $.ajax({
