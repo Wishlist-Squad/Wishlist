@@ -56,7 +56,7 @@ $(function () {
 
         ajax.done(function(res){
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${res.id} has been created`)
         });
 
         ajax.fail(function(res){
@@ -90,7 +90,7 @@ $(function () {
 
         ajax.done(function(res){
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${wishlist_id} has been updated`)
         });
 
         ajax.fail(function(res){
@@ -118,7 +118,7 @@ $(function () {
         ajax.done(function(res){
             //alert(res.toSource())
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${wishlist_id} has been retrieved`)
         });
 
         ajax.fail(function(res){
@@ -146,7 +146,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Wishlist has been Deleted!")
+            flash_message(`Wishlist with id ${wishlist_id} has been Deleted!`)
         });
 
         ajax.fail(function(res){
@@ -193,26 +193,59 @@ $(function () {
 
         ajax.done(function(res){
             //alert(res.toSource())
-            console.log(res)
             $("#search_results").empty();
-            $("#search_results").append('<table class="table-striped" cellpadding="10">');
-            var header = '<tr>'
-            header += '<th style="width:10%">ID</th>'
-            header += '<th style="width:40%">Name</th>'
-            header += '<th style="width:40%">Customer ID</th>'
-            header += '</tr>'
-            $("#search_results").append(header);
+            var table = '<table class="table-striped">';
+            var header = `
+                <thead>
+                    <tr>
+                        <th class="col-md-1">ID</th>
+                        <th class="col-md-2">Customer ID</th>
+                        <th class="col-md-3">Name</th>
+                        <th class="col-md-1">Item ID</th>
+                        <th class="col-md-2">Product ID</th>
+                        <th class="col-md-3">Product Name</th>
+                    </tr>
+                </thead>
+            `;
+            table += header;
+            body = "<tbody>";
             var firstWishlist = "";
-            for(var i = 0; i < res.length; i++) {
+            for(var i = 0; i < res.length; i += 1) {
                 var wishlist = res[i];
-                var row = "<tr><td>"+wishlist.id+"</td><td>"+wishlist.name+"</td><td>"+wishlist.customer_id+"</td></tr>";
-                $("#search_results").append(row);
+                var row = "<tr>";
+                // append wishlist data
+                row += `<td class="col-md-1">${wishlist.id}</td>`;
+                row += `<td class="col-md-2">${wishlist.customer_id}</td>`;
+                row += `<td class="col-md-3">${wishlist.name}</td>`;
+                // append product data
+                var padding = "";
+                for (var j = 1; j <= 3; ++j)
+                    padding += `<td class="col-md-${j}"></td>`;
+                if (wishlist.products.length === 0) {
+                    row += padding;
+                    row += `</tr>`;
+                } else {
+                    for (var k = 0; k < wishlist.products.length; ++k) {
+                        if (k > 0) row += `<tr>` + padding;
+                        var product = wishlist.products[k];
+                        row += `<td class="col-md-1">${product.id}</td>`;
+                        row += `<td class="col-md-2">${product.product_id}</td>`;
+                        row += `<td class="col-md-3">${product.name}</td>`;
+                        row += `</tr>`;
+
+                    }
+                }
+
+                body += row;
                 if (i == 0) {
                     firstWishlist = wishlist;
                 }
+
             }
 
-            $("#search_results").append('</table>');
+            body += '</tbody>';
+            table += body;
+            $("#search_results").append(table);
 
             // copy the first result to the form
             if (firstWishlist != "") {
@@ -273,8 +306,6 @@ $(function () {
     // ****************************************
 
     $("#create-item-btn").click(function () {
-        console.log("adding an item")
-
         var wishlist_id = $("#item_wishlist_id").val();
         var product_id = $("#item_product_id").val();
         var name = $("#item_product_name").val();
@@ -295,7 +326,7 @@ $(function () {
 
         ajax.done(function(res){
             update_item_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: created a item with id ${res.id} in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -323,7 +354,7 @@ $(function () {
         ajax.done(function(res){
             //alert(res.toSource())
             update_item_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: found item with id ${item_id} in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -352,7 +383,6 @@ $(function () {
 
         ajax.done(function(res){
             //alert(res.toSource())
-            console.log(res)
             $("#search_results").empty();
             $("#search_results").append('<table class="table-striped" cellpadding="10">');
             var header = '<tr>'
@@ -377,8 +407,8 @@ $(function () {
             if (firstItem != "") {
                 update_item_form_data(firstItem)
             }
-
-            flash_message("Success")
+          
+            flash_message(`Success: found items in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -388,4 +418,29 @@ $(function () {
 
     });
 
+    // ****************************************
+    // Delete a Wishlist
+    // ****************************************
+
+    $("#delete-item-btn").click(function () {
+
+        var item_id = $("#item_id").val();
+        var wishlist_id = $("#item_wishlist_id").val();
+
+        var ajax = $.ajax({
+            type: "DELETE",
+            url: `/wishlists/${wishlist_id}/items/${item_id}`,
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_item_form_data()
+            flash_message(`Success: Item with ID ${item_id} has been Deleted from Wishlist ${wishlist_id}!`)
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
+    });
 })
