@@ -124,6 +124,19 @@ Scenario: Listing all items in a Wishlist
     And I press the "Search" button in the item form
     Then I should see "1" in the "product_id" field in the item form
     And I should see "iphone" in the "product_name" field in the item form
+
+Scenario: Update a wishlist
+    When I visit the "Home Page"
+    And I set "customer_id" to "222"
+    And I press the "Search" button
+    Then I should see "myself" in the "Name" field
+    When I set "Name" to "mySelfnewName"
+    And I copy the "Id" field
+    And I press the "Update" button
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "mySelfnewName" in the "Name" field
     
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
