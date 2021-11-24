@@ -56,11 +56,12 @@ $(function () {
 
         ajax.done(function(res){
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${wishlist_id} has been created`)
         });
 
         ajax.fail(function(res){
-            flash_message(res.responseJSON.message)
+            var msg = "A name and customer id needs to be provided, ERROR: "
+            flash_message(msg + res.responseJSON.message)
         });
     });
 
@@ -89,11 +90,12 @@ $(function () {
 
         ajax.done(function(res){
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${wishlist_id} has been updated`)
         });
 
         ajax.fail(function(res){
-            flash_message(res.responseJSON.message)
+            var msg = "Make sure a valid wishlist id is given, ERROR: "
+            flash_message(msg + res.responseJSON.message)
         });
 
     });
@@ -116,12 +118,13 @@ $(function () {
         ajax.done(function(res){
             //alert(res.toSource())
             update_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: wishlist ${wishlist_id} has been retrieved`)
         });
 
         ajax.fail(function(res){
             clear_data_fields();
-            flash_message(res.responseJSON.message)
+            var msg = "Make sure a valid wishlist id is given, ERROR: "
+            flash_message(msg + res.responseJSON.message)
         });
 
     });
@@ -143,7 +146,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_form_data()
-            flash_message("Wishlist has been Deleted!")
+            flash_message(`Wishlist with id ${wishlist_id} has been Deleted!`)
         });
 
         ajax.fail(function(res){
@@ -216,11 +219,12 @@ $(function () {
                 update_form_data(firstWishlist)
             }
 
-            flash_message("Success")
+            flash_message("Successfully searched wishlists")
         });
 
         ajax.fail(function(res){
-            flash_message(res.responseJSON.message)
+            var msg = "Make sure a valid customer id is given, ERROR: "
+            flash_message(msg + res.responseJSON.message)
         });
 
     });
@@ -291,7 +295,7 @@ $(function () {
 
         ajax.done(function(res){
             update_item_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: created a item with id ${res.id} in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -319,7 +323,7 @@ $(function () {
         ajax.done(function(res){
             //alert(res.toSource())
             update_item_form_data(res)
-            flash_message("Success")
+            flash_message(`Success: found item with id ${item_id} in wishlist ${wishlist_id}`)
         });
 
         ajax.fail(function(res){
@@ -328,6 +332,86 @@ $(function () {
             flash_message(msg + res.responseJSON.message)
         });
 
+    });
+
+    // ****************************************
+    // Search (list) Items in a Wishlist
+    // ****************************************
+
+    $("#search-item-btn").click(function () {
+
+        // var name = $("#wishlist_name").val();
+        var wishlist_id = $("#item_wishlist_id").val();
+
+        var ajax = $.ajax({
+            type: "GET",
+            url: `/wishlists/${wishlist_id}/items`,
+            contentType: "application/json",
+            data: ''
+        })
+
+        ajax.done(function(res){
+            //alert(res.toSource())
+            console.log(res)
+            $("#search_results").empty();
+            $("#search_results").append('<table class="table-striped" cellpadding="10">');
+            var header = '<tr>'
+            header += '<th style="width:10%">Item ID</th>'
+            header += '<th style="width:40%">Product ID</th>'
+            header += '<th style="width:40%">Name</th>'
+            header += '</tr>'
+            $("#search_results").append(header);
+            var firstItem = "";
+            for(var i = 0; i < res.length; i++) {
+                var product = res[i];
+                var row = "<tr><td>"+product.id+"</td><td>"+product.product_id+"</td><td>"+product.name+"</td></tr>";
+                $("#search_results").append(row);
+                if (i == 0) {
+                    firstItem = product;
+                }
+            }
+
+            $("#search_results").append('</table>');
+
+            // copy the first result to the form
+            if (firstItem != "") {
+                update_item_form_data(firstItem)
+            }
+
+            flash_message(`Success: found items in wishlist ${wishlist_id}`)
+        });
+
+        ajax.fail(function(res){
+            var msg = " A valid wishlist id in the item form needs to be given, ERROR: ";
+            flash_message(msg + res.responseJSON.message)
+        });
+
+    });
+
+    // ****************************************
+    // Delete a Wishlist
+    // ****************************************
+
+    $("#delete-item-btn").click(function () {
+
+        var item_id = $("#item_id").val();
+        var wishlist_id = $("#item_wishlist_id").val();
+
+        var ajax = $.ajax({
+            type: "DELETE",
+            url: `/wishlists/${wishlist_id}/items/${item_id}`,
+            contentType: "application/json",
+            data: '',
+        })
+
+        ajax.done(function(res){
+            clear_item_form_data()
+            flash_message(`Item with ID ${item_id} has been Deleted from Wishlist ${wishlist_id}!`)
+        });
+
+        ajax.fail(function(res){
+            flash_message("Server error!")
+        });
     });
 
 })
