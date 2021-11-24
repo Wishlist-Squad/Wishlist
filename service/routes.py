@@ -144,8 +144,10 @@ def update_pets(wishlist_id):
     if not wishlist:
         raise NotFound(
             "Wishlist with id '{}' was not found.".format(wishlist_id))
-    wishlist.deserialize(request.get_json())
-    wishlist.id = wishlist_id
+    updated_wishlist = Wishlist()
+    updated_wishlist.deserialize(request.get_json())
+    wishlist.name = updated_wishlist.name
+    wishlist.customer_id = updated_wishlist.customer_id
     wishlist.save()
 
     app.logger.info("Wishlist with ID [%s] updated.", wishlist.id)
