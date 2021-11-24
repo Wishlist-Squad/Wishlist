@@ -253,7 +253,7 @@ $(function () {
                 update_form_data(firstWishlist)
             }
 
-            flash_message("Success")
+            flash_message("Successfully searched wishlists")
         });
 
         ajax.fail(function(res){

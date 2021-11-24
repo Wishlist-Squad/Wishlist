@@ -48,6 +48,32 @@ Scenario: Retrieving a wishlist
     Then I should see "222" in the "customer_id" field
     And I should see "myself" in the "name" field
 
+Scenario: Deleting an item
+    When I visit the "Home Page"
+    And I press the "Search" button
+    And I copy the "Id" field
+    And I paste the "wishlist_id" field in the item form
+    And I set "product_id" to "999" in the item form
+    And I set "product_name" to "apple" in the item form
+    And I press the "Create" button in the item form
+    Then I should see the message "Success"
+    When I store the item id
+    And I copy the "wishlist_id" field in the item form
+    And I press the "Clear" button in the item form
+    Then the "Id" field should be empty in the item form
+    And the "wishlist_id" field should be empty in the item form
+    And the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Delete" button in the item form
+    Then I should see the message "Success"
+    When I reference the item id
+    And I paste the "wishlist_id" field in the item form
+    And I press the "Retrieve" button in the item form
+    Then the "product_id" field should be empty in the item form
+    And the "product_name" field should be empty in the item form
+
 Scenario: Adding an Item to a Wishlist
     When I visit the "Home Page"
     And I press the "Search" button
@@ -89,6 +115,7 @@ Scenario: Create a wishlist
     And I paste the "Id" field
     And I press the "Retrieve" button
     Then I should see "ThanksGiving" in the "Name" field
+
     
 # Scenario: Create a Pet
 #     When I visit the "Home Page"
