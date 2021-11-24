@@ -406,7 +406,7 @@ $(function () {
 
         ajax.done(function(res){
             clear_item_form_data()
-            flash_message(`Item with ID ${item_id} has been Deleted from Wishlist ${wishlist_id}!`)
+            flash_message(`Success: Item with ID ${item_id} has been Deleted from Wishlist ${wishlist_id}!`)
         });
 
         ajax.fail(function(res){
