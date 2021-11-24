@@ -51,7 +51,7 @@ def step_impl(context, message):
 
 @when('I set "{element_name}" to "{text_string}"')
 def step_impl(context,element_name,text_string):
-    element_id = ID_PREFIX + element_name
+    element_id = ID_PREFIX + element_name.lower()
     element = context.driver.find_element_by_id(element_id)
     element.clear()
     element.send_keys(text_string)
@@ -124,6 +124,15 @@ def step_impl(context, name):
     ensure(name in element.text, False, error_msg)
 
 
+@then('I should see the message "{message}"')
+def step_impl(context, message):
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element(
+            (By.ID, 'flash_message'),
+            message
+        )
+    )
+    expect(found).to_be(True)
 
 '''
 @when('I set the "{element_name}" to "{text_string}"')

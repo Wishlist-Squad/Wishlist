@@ -49,18 +49,19 @@ Scenario: Retrieving a wishlist
     And I should see "myself" in the results
     And I should not see "television" in the results
 
-# Scenario: Create a Pet
-#     When I visit the "Home Page"
-#     And I set the "Name" to "Happy"
-#     And I set the "Category" to "Hippo"
-#     And I select "False" in the "Available" dropdown
-#     And I press the "Create" button
-#     Then I should see the message "Success"
-#     When I copy the "Id" field
-#     And I press the "Clear" button
-#     Then the "Id" field should be empty
-#     And the "Name" field should be empty
-#     And the "Category" field should be empty
+Scenario: Create a wishlist
+    When I visit the "Home Page"
+    And I set "Name" to "ThanksGiving"
+    And I set "customer_id" to "222"
+    And I press the "Create" button
+    Then I should see the message "Success"
+    When I copy the "Id" field
+    And I press the "Clear" button
+    And I paste the "Id" field
+    And I press the "Retrieve" button
+    Then I should see "ThanksGiving" in the "Name" field
+    
+
 #     When I paste the "Id" field
 #     And I press the "Retrieve" button
 #     Then I should see "Happy" in the "Name" field
