@@ -182,7 +182,9 @@ class Wishlist(db.Model, PersistentBase):
         try:
             self.name = data["name"]
             self.customer_id = data["customer_id"]
-            product_list = data.get("products")
+            product_list = []
+            if "products" in data:
+                product_list = data.get('products')
             for json_product in product_list:
                 product = Product()
                 product.deserialize(json_product)
