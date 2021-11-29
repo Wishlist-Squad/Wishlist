@@ -219,7 +219,6 @@ class WishlistCollection(Resource):
         else:
             app.logger.info('Returning unfiltered list.')
             wishlists = Wishlist.all()
-
         results = [wishlist.serialize() for wishlist in wishlists]
         app.logger.info('[%s] Wishlists returned', len(results))
         return results, status.HTTP_200_OK

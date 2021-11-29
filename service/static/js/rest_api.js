@@ -188,7 +188,7 @@ $(function () {
         var ajax = $.ajax({
             type: "GET",
             url: "/wishlists?" + queryString,
-            contentType: "application/json",
+            // contentType: "application/json",
             data: ''
         })
 
