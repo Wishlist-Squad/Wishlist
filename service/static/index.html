@@ -104,10 +104,17 @@
               </div>
             </div>
             <div class="form-group">
+              <label class="control-label col-sm-2" for="item_purchased">Purchased:</label>
+              <div class="col-sm-10">
+                <input type="text" readonly class="form-control" id="item_purchased" placeholder="N/A">
+              </div>
+            </div>
+            <div class="form-group">
               <div class="col-sm-offset-2 col-sm-10">
                 <button type="submit" class="btn btn-primary" id="search-item-btn">Search</button>
                 <button type="submit" class="btn btn-primary" id="clear-item-btn">Clear</button>
                 <button type="submit" class="btn btn-success" id="create-item-btn">Create</button>
+                <button type="submit" class="btn btn-warning" id="purchase-item-btn">Purchase</button>
               </div>
             </div>
           </div> <!-- form div -->
@@ -123,7 +130,8 @@
                 <th class="col-md-3">Name</th>
                 <th class="col-md-1">Item ID</th>
                 <th class="col-md-2">Product ID</th>
-                <th class="col-md-3">Product Name</th>
+                <th class="col-md-2">Product Name</th>
+                <th class="col-md-1">Purchased</th>
               </tr>
             </thead>
           </table>

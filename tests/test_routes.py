@@ -383,12 +383,6 @@ class TestWishlistsServer(unittest.TestCase):
             content_type="application/json"
         )
         self.assertEqual(resp.status_code,  status.HTTP_200_OK)
-
-        # retrieve it back and make sure address is not there
-        resp = self.app.get(
-            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id), 
-            content_type="application/json"
-        )
         purchased_product = resp.get_json()
         self.assertEqual(purchased_product["purchased"], True, "products does not match")
 

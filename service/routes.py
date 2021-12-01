@@ -67,12 +67,20 @@ api = Api(app,
 
 
 # Define the model so that the docs reflect what can be sent
-product_model = api.model('Product', {
+create_product_model = api.model('Product', {
     'wishlist_id': fields.Integer(required=True, description="The wishlist this item belongs to"),
     'product_id': fields.Integer(required=True, description="The ID of the product"),
-    "name": fields.String(required=True, description="The name of the product"),
-    "purchased": fields.Boolean(required=False, description="Whether this item was purchased off of this wishlist")
+    "name": fields.String(required=True, description="The name of the product")
 })
+
+product_model = api.inherit(
+    'ProductModel',
+    create_product_model,
+    {
+        'id': fields.Integer(readOnly=True, description="The unique id assigned to each item in a wishlist"),
+        "purchased": fields.Boolean(required=False, description="Whether this item was purchased off of this wishlist") 
+    }
+)
 
 create_model = api.model('Wishlist', {
     'name': fields.String(required=True,
@@ -92,7 +100,7 @@ wishlist_model = api.inherit(
 )
 
 wishlist_args = reqparse.RequestParser()
-wishlist_args.add_argument('customer_id', type=str, required=False, help='List Wishlists by customer')
+wishlist_args.add_argument('customer_id', type=int, location="args", required=False, help='List Wishlists by customer')
 
 ######################################################################
 # Special Error Handlers
@@ -407,14 +415,14 @@ def purchase_products(wishlist_id, product_id):
     app.logger.info(
         "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
     product = Product.find_or_404(product_id)
-    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
-    wishlist = Wishlist.find_or_404(wishlist_id)
-    results = [product.serialize() for product in wishlist.products]
-    if product.purchased == True :
-        return make_response(jsonify(results), status.HTTP_400_BAD_REQUEST)
     product.purchased = True
     product.save()
-    return make_response(jsonify(results), status.HTTP_200_OK)
+    # wishlist = Wishlist.find_or_404(wishlist_id)
+    # results = [product.serialize() for product in wishlist.products]
+    # if product.purchased == True :
+    #     return make_response(jsonify(results), status.HTTP_400_BAD_REQUEST)
+    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
+    return make_response(product.serialize(), status.HTTP_200_OK)
 
 
 
