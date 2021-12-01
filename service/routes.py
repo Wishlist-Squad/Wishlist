@@ -336,9 +336,35 @@ class WishlistCollection(Resource):
 #     results = [address.serialize() for address in account.addresses]
 #     return make_response(jsonify(results), status.HTTP_200_OK)
 
-# ######################################################################
-# # ADD A ITEM TO AN WISHLIST
-# ######################################################################
+
+######################################################################
+#  PATH: /wishlists/<wishlist_id>/items
+######################################################################
+@api.route('/wishlists/<wishlist_id>/items')
+@api.param('wishlist_id', 'The Wishlist identifier')
+class ProductsCollections(Resource):
+    """
+    ProductsResource class
+    Handles all interactions with Products in a Wishlist
+    """
+
+    @api.doc('create_pets')
+    @api.response(400, 'The posted data was not valid')
+    @api.expect(create_product_model)
+    @api.marshal_with(product_model, code=201)
+    def post(self,wishlist_id):
+        # ADD A ITEM TO AN WISHLIST
+        app.logger.info("Request to add an item to an wishlist")
+        wishlist = Wishlist.find(wishlist_id)
+        app.logger.debug('Payload = %s', api.payload)
+        product = Product()
+        product.deserialize(api.payload)
+        wishlist.products.append(product)
+        wishlist.save()
+        app.logger.info(')roduct with new id [%s] created!', product.id)
+        location_url = api.url_for(ProductsResource, wishlist_id =wishlist_id, product_id=product.id, _external=True)
+        return product.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
+#     product = Product()
 # @app.route('/wishlists/<int:wishlist_id>/items', methods=['POST'])
 # def create_item(wishlist_id):
 #     """
