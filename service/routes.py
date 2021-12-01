@@ -397,7 +397,7 @@ class ProductsResource(Resource):
     """
     @api.doc('get_product')
     @api.response(404, 'Product or wishlist not found')
-    #@api.marshal_with(product_model)
+    @api.marshal_with(product_model)
     def get(self, wishlist_id, product_id):
         """
         Get an Product
@@ -407,8 +407,7 @@ class ProductsResource(Resource):
             "Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
         wishlist = Wishlist.find_or_404(wishlist_id)
         product = Product.find_or_404(product_id)
-        message = product.serialize()
-        return make_response(jsonify(message), status.HTTP_200_OK)
+        return product.serialize(), status.HTTP_200_OK
 
     @api.doc('delete_product')
     @api.response(204, 'product deleted')
