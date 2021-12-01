@@ -97,7 +97,7 @@ Vagrant.configure(2) do |config|
   SHELL
 
     # Create .env file if it doesn't exist
-    sudo -H -u vagrant sh -c 'cd /vagrant && if [ ! -f .env ]; then cp dot-env-example .env; fi'
+    sudo -H -u vagrant sh -c 'cd /vagrant && if [ ! -f .env ]; then cp dot-env .env; fi'
     SHELL
 
   ######################################################################
