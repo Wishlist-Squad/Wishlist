@@ -69,7 +69,7 @@ api = Api(app,
 # Define the model so that the docs reflect what can be sent
 create_product_model = api.model('Product', {
     'wishlist_id': fields.Integer(required=True, description="The wishlist this item belongs to"),
-    'product_id': fields.Integer(required=True, description="The ID of the product"),
+    'item_id': fields.Integer(required=True, description="The ID of the product"),
     "name": fields.String(required=True, description="The name of the product")
 })
 
@@ -361,8 +361,8 @@ class ProductsCollections(Resource):
         product.deserialize(api.payload)
         wishlist.products.append(product)
         wishlist.save()
-        app.logger.info(')roduct with new id [%s] created!', product.id)
-        location_url = api.url_for(ProductsResource, wishlist_id =wishlist_id, product_id=product.id, _external=True)
+        app.logger.info(')product with new id [%s] created!', product.id)
+        location_url = api.url_for(ProductsResource, wishlist_id =wishlist_id, item_id=product.id, _external=True)
         return product.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
 #     product = Product()
 # @app.route('/wishlists/<int:wishlist_id>/items', methods=['POST'])
@@ -382,42 +382,42 @@ class ProductsCollections(Resource):
 #     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 ######################################################################
-#  PATH: /wishlists/<wishlist_id>/items/<product_id>
+#  PATH: /wishlists/<wishlist_id>/items/<item_id>
 ######################################################################
-@api.route('/wishlists/<int:wishlist_id>/items/<int:product_id>')
+@api.route('/wishlists/<int:wishlist_id>/items/<int:item_id>')
 @api.param('wishlist_id', 'The Wishlist identifier')
-@api.param('product_id', 'The Product identifier')
+@api.param('item_id', 'The Product identifier')
 class ProductsResource(Resource):
     """
     ProductsResource class
 
     Allows the manipulation of items within a wishlist
-    DELETE /wishlists/<wishlists_id>/items/<product_id> -  Deletes a Product with the id
-    GET /wishlists/<wishlists_id>/items/<product_id> -  Returns a Product with the id
+    DELETE /wishlists/<wishlists_id>/items/<item_id> -  Deletes a Product with the id
+    GET /wishlists/<wishlists_id>/items/<item_id> -  Returns a Product with the id
     """
     @api.doc('get_product')
     @api.response(404, 'Product or wishlist not found')
     @api.marshal_with(product_model)
-    def get(self, wishlist_id, product_id):
+    def get(self, wishlist_id, item_id):
         """
         Get an Product
         This endpoint returns just an product
         """
         app.logger.info(
-            "Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+            "Request to get an item with id: %s from wishlist with id: %s", item_id, wishlist_id)
         wishlist = Wishlist.find_or_404(wishlist_id)
-        product = Product.find_or_404(product_id)
+        product = Product.find_or_404(item_id)
         return product.serialize(), status.HTTP_200_OK
 
     @api.doc('delete_product')
     @api.response(204, 'product deleted')
-    def delete(self, wishlist_id, product_id):
+    def delete(self, wishlist_id, item_id):
         """
         Delete a Product
         """
         app.logger.info(
-            "Request to delete product with id: %s from wishlist with id: %s", product_id, wishlist_id)
-        product = Product.find(product_id)
+            "Request to delete product with id: %s from wishlist with id: %s", item_id, wishlist_id)
+        product = Product.find(item_id)
         if product:
             product.delete()
         return make_response("", status.HTTP_204_NO_CONTENT)
@@ -426,14 +426,14 @@ class ProductsResource(Resource):
 # # DELETE AN ITEM FROM WISHLIST
 # ######################################################################
 
-# @app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['DELETE'])
-# def delete_products(wishlist_id, product_id):
+# @app.route('/wishlists/<int:wishlist_id>/items/<int:item_id>', methods=['DELETE'])
+# def delete_products(wishlist_id, item_id):
 #     """
 #     Delete an Product
 #     """
 #     app.logger.info(
-#         "Request to delete product with id: %s from wishlist with id: %s", product_id, wishlist_id)
-#     product = Product.find(product_id)
+#         "Request to delete product with id: %s from wishlist with id: %s", item_id, wishlist_id)
+#     product = Product.find(item_id)
 #     if product:
 #         product.delete()
 #     return make_response("", status.HTTP_204_NO_CONTENT)
@@ -443,16 +443,16 @@ class ProductsResource(Resource):
 # ######################################################################
 
 
-# @app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>', methods=['GET'])
-# def get_products(wishlist_id, product_id):
+# @app.route('/wishlists/<int:wishlist_id>/items/<int:item_id>', methods=['GET'])
+# def get_products(wishlist_id, item_id):
 #     """
 #     Get an Product
 #     This endpoint returns just an product
 #     """
 #     app.logger.info(
-#         "Request to get an item with id: %s from wishlist with id: %s", product_id, wishlist_id)
+#         "Request to get an item with id: %s from wishlist with id: %s", item_id, wishlist_id)
 #     wishlist = Wishlist.find_or_404(wishlist_id)
-#     product = Product.find_or_404(product_id)
+#     product = Product.find_or_404(item_id)
 #     message = product.serialize()
 #     return make_response(jsonify(message), status.HTTP_200_OK)
 
@@ -472,22 +472,22 @@ def list_items_wishlists(wishlist_id):
 # ######################################################################
 # # PURCHASE AN ITEM FROM WISHLIST
 # ######################################################################
-@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>/purchase', methods=['PUT'])
-def purchase_products(wishlist_id, product_id):
+@app.route('/wishlists/<int:wishlist_id>/items/<int:item_id>/purchase', methods=['PUT'])
+def purchase_products(wishlist_id, item_id):
     """
     Purchase an Product
     This endpoint returns just an product
     """
     app.logger.info(
-        "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
-    product = Product.find_or_404(product_id)
+        "Request to purchase product with id: %s from wishlist with id: %s", item_id, wishlist_id)
+    product = Product.find_or_404(item_id)
     product.purchased = True
     product.save()
     # wishlist = Wishlist.find_or_404(wishlist_id)
     # results = [product.serialize() for product in wishlist.products]
     # if product.purchased == True :
     #     return make_response(jsonify(results), status.HTTP_400_BAD_REQUEST)
-    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
+    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",item_id, wishlist_id)
     return make_response(product.serialize(), status.HTTP_200_OK)
 
 
