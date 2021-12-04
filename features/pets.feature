@@ -10,7 +10,7 @@ Feature: The wishlist service back-end
             | myself    | 222         |
             | Joey      | 111         |
         And the following items in the wishlists
-            | wishlist_index | product_id | product_name  | purchased |
+            | wishlist_index | item_id | product_name  | purchased |
             | 0              | 1          | iphone        | False     |
             | 0              | 2          | Mac Pro       | False     |
             | 1              | 3          | Cat Bed       | False     |
@@ -53,7 +53,7 @@ Feature: The wishlist service back-end
         And I press the "Search" button
         And I copy the "Id" field
         And I paste the "wishlist_id" field in the item form
-        And I set "product_id" to "999" in the item form
+        And I set "item_id" to "999" in the item form
         And I set "product_name" to "apple" in the item form
         And I press the "Create" button in the item form
         Then I should see the message "Success"
@@ -62,7 +62,7 @@ Feature: The wishlist service back-end
         And I press the "Clear" button in the item form
         Then the "Id" field should be empty in the item form
         And the "wishlist_id" field should be empty in the item form
-        And the "product_id" field should be empty in the item form
+        And the "item_id" field should be empty in the item form
         And the "product_name" field should be empty in the item form
         When I reference the item id
         And I paste the "wishlist_id" field in the item form
@@ -71,7 +71,7 @@ Feature: The wishlist service back-end
         When I reference the item id
         And I paste the "wishlist_id" field in the item form
         And I press the "Retrieve" button in the item form
-        Then the "product_id" field should be empty in the item form
+        Then the "item_id" field should be empty in the item form
         And the "product_name" field should be empty in the item form
 
     Scenario: Adding an Item to a Wishlist
@@ -79,7 +79,7 @@ Feature: The wishlist service back-end
         And I press the "Search" button
         And I copy the "Id" field
         And I paste the "wishlist_id" field in the item form
-        And I set "product_id" to "999" in the item form
+        And I set "item_id" to "999" in the item form
         And I set "product_name" to "table" in the item form
         And I press the "Create" button in the item form
         Then I should see the message "Success"
@@ -88,12 +88,12 @@ Feature: The wishlist service back-end
         And I press the "Clear" button in the item form
         Then the "Id" field should be empty in the item form
         And the "wishlist_id" field should be empty in the item form
-        And the "product_id" field should be empty in the item form
+        And the "item_id" field should be empty in the item form
         And the "product_name" field should be empty in the item form
         When I reference the item id
         And I paste the "wishlist_id" field in the item form
         And I press the "Retrieve" button in the item form
-        Then I should see "999" in the "product_id" field in the item form
+        Then I should see "999" in the "item_id" field in the item form
         And I should see "table" in the "product_name" field in the item form
 
     Scenario: List all wishlists
@@ -122,7 +122,7 @@ Feature: The wishlist service back-end
         And I copy the "Id" field
         And I paste the "wishlist_id" field in the item form
         And I press the "Search" button in the item form
-        Then I should see "1" in the "product_id" field in the item form
+        Then I should see "1" in the "item_id" field in the item form
         And I should see "iphone" in the "product_name" field in the item form
 
     Scenario: Update a wishlist

@@ -18,8 +18,8 @@ class ProductFactory(factory.Factory):
     # name = FuzzyChoice(choices=["lamp", "shirt", "ipad",
                     #    "computer mouse", "milk", "scissors", "tomato"])
 
-    product_id = randint(1, len(products))
-    name = products[product_id-1]
+    item_id = randint(1, len(products))
+    name = products[item_id-1]
 
 
 class WishlistFactory(factory.Factory):

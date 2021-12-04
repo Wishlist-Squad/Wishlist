@@ -26,8 +26,8 @@ delete_wishlists   DELETE   /wishlists/<wishlist_id>
 
 list_products      GET      /wishlists/<int:wishlist_id>/products
 create_products    POST     /wishlists/<wishlist_id>/products
-get_products       GET      /wishlists/<wishlist_id>/products/<product_id>
-delete_products    DELETE   /wishlists/<wishlist_id>/products/<product_id>
+get_products       GET      /wishlists/<wishlist_id>/products/<item_id>
+delete_products    DELETE   /wishlists/<wishlist_id>/products/<item_id>
 ```
 
 ## Prerequisite Installation using Vagrant

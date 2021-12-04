@@ -296,7 +296,7 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         data = resp.get_json()
         logging.debug(data)
-        self.assertEqual(data["product_id"], product.product_id)
+        self.assertEqual(data["item_id"], product.item_id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], test_wishlist.id)
 
@@ -325,7 +325,8 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         data = resp.get_json()
-        self.assertEqual(data["product_id"], product.product_id)
+        print(data)
+        self.assertEqual(data["item_id"], product.item_id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], test_wishlist.id)
 
@@ -359,29 +360,35 @@ class TestWishlistsServer(unittest.TestCase):
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
 
-# PURCHASE ITEM  FROM WISHLIST
+# PURCHASE ITEM FROM WISHLIST
     def test_purchase_product(self):
         """ Purchase a product from a wishlist """
         test_wishlist = self._create_wishlists(1)[0]
         product = ProductFactory()
         resp = self.app.post(
-            "/wishlists/{}/items".format(test_wishlist.id),
-            json=product.serialize(),
+            "/wishlists/{}/items".format(test_wishlist.id), 
+            json=product.serialize(), 
             content_type="application/json"
         )
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
 
         data = resp.get_json()
-        logging.debug(data)
         product_wl_id = data["id"]
-        
-        # send purchase request
-        resp = self.app.put(
-            "/wishlists/{}/items/{}/purchase".format(test_wishlist.id, product_wl_id),
+
+        # retrieve it back
+        resp = self.app.get(
+            "/wishlists/{}/items/{}".format(test_wishlist.id, product_wl_id), 
             content_type="application/json"
         )
-        self.assertEqual(resp.status_code,  status.HTTP_200_OK)
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
+        # send purchase request
+        resp = self.app.put(
+            "/wishlists/{}/items/{}/purchase".format(test_wishlist.id, product_wl_id), 
+            content_type="application/json"
+        )
+        self.assertEqual(resp.status_code, status.HTTP_200_OK)
         purchased_product = resp.get_json()
+        
         self.assertEqual(purchased_product["purchased"], True, "products does not match")
 
 # GET ITEM LIST FROM WISHLIST

@@ -232,7 +232,7 @@ $(function () {
                         if (k > 0) row += `<tr>` + padding;
                         var product = wishlist.products[k];
                         row += `<td class="col-md-1">${product.id}</td>`;
-                        row += `<td class="col-md-2">${product.product_id}</td>`;
+                        row += `<td class="col-md-2">${product.item_id}</td>`;
                         row += `<td class="col-md-2">${product.name}</td>`;
                         row += `<td class="col-md-1">${product.purchased}</td>`;
                         row += `</tr>`;
@@ -277,14 +277,14 @@ $(function () {
     function update_item_form_data(res) {
         $("#item_id").val(res.id);
         $("#item_wishlist_id").val(res.wishlist_id);
-        $("#item_product_id").val(res.product_id);
+        $("#item_item_id").val(res.item_id);
         $("#item_product_name").val(res.name);
         $("#item_purchased").val(res.purchased);
     }
 
     function clear_item_data_fields() {
         $("#item_wishlist_id").val("");
-        $("#item_product_id").val("");
+        $("#item_item_id").val("");
         $("#item_product_name").val("");
         $("#item_purchased").val("");
     }
@@ -313,12 +313,12 @@ $(function () {
 
     $("#create-item-btn").click(function () {
         var wishlist_id = $("#item_wishlist_id").val();
-        var product_id = $("#item_product_id").val();
+        var item_id = $("#item_item_id").val();
         var name = $("#item_product_name").val();
 
         var data = {
             wishlist_id,
-            product_id,
+            item_id,
             name,
             purchased: false
         };
@@ -336,7 +336,7 @@ $(function () {
         });
 
         ajax.fail(function(res){
-            var msg = "You need a product id, product name and valid wishlsit id, ERROR: "
+            var msg = "You need an item id, product name and valid wishlsit id, ERROR: "
             flash_message(msg + res.responseJSON.message)
         });
     });
@@ -402,7 +402,7 @@ $(function () {
             var firstItem = "";
             for(var i = 0; i < res.length; i++) {
                 var product = res[i];
-                var row = "<tr><td>"+product.id+"</td><td>"+product.product_id+"</td><td>"+product.name+"</td><td>"+product.purchased+"</td></tr>";
+                var row = "<tr><td>"+product.id+"</td><td>"+product.item_id+"</td><td>"+product.name+"</td><td>"+product.purchased+"</td></tr>";
                 $("#search_results").append(row);
                 if (i == 0) {
                     firstItem = product;
