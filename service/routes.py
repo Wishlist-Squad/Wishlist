@@ -347,39 +347,28 @@ class ProductsCollections(Resource):
     ProductsResource class
     Handles all interactions with Products in a Wishlist
     """
-
-    @api.doc('create_pets')
+    @api.doc('create_products')
     @api.response(400, 'The posted data was not valid')
     @api.expect(create_product_model)
     @api.marshal_with(product_model, code=201)
     def post(self,wishlist_id):
         # ADD A ITEM TO AN WISHLIST
         app.logger.info("Request to add an item to an wishlist")
-        wishlist = Wishlist.find(wishlist_id)
+        wishlist = Wishlist.find_or_404(wishlist_id)
         app.logger.debug('Payload = %s', api.payload)
+
         product = Product()
         product.deserialize(api.payload)
+        product.wishlist_id = wishlist_id
+        product.purchased = False
+        product.create()
+
         wishlist.products.append(product)
         wishlist.save()
+        
         app.logger.info(')roduct with new id [%s] created!', product.id)
         location_url = api.url_for(ProductsResource, wishlist_id =wishlist_id, product_id=product.id, _external=True)
         return product.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
-#     product = Product()
-# @app.route('/wishlists/<int:wishlist_id>/items', methods=['POST'])
-# def create_item(wishlist_id):
-#     """
-#     Create an Item on an Wishlist
-#     This endpoint will add an item to an wishlist
-#     """
-#     app.logger.info("Request to add an item to an wishlist")
-#     check_content_type("application/json")
-#     wishlist = Wishlist.find(wishlist_id)
-#     product = Product()
-#     product.deserialize(request.get_json())
-#     wishlist.products.append(product)
-#     wishlist.save()
-#     message = product.serialize()
-#     return make_response(jsonify(message), status.HTTP_201_CREATED)
 
 ######################################################################
 #  PATH: /wishlists/<wishlist_id>/items/<product_id>
@@ -470,26 +459,32 @@ def list_items_wishlists(wishlist_id):
     return make_response(jsonify(results), status.HTTP_200_OK)
 
 # ######################################################################
-# # PURCHASE AN ITEM FROM WISHLIST
+# # Path: /wishlists/wishlist_id/items/product_id/purchase
 # ######################################################################
-@app.route('/wishlists/<int:wishlist_id>/items/<int:product_id>/purchase', methods=['PUT'])
-def purchase_products(wishlist_id, product_id):
+@api.route('/wishlists/<wishlist_id>/items/<product_id>/purchase')
+@api.param('wishlist_id', 'The Wishlist identifier')
+@api.param('product_id', 'The Product identifier')
+class PurchaseResource(Resource):
     """
     Purchase an Product
     This endpoint returns just an product
     """
-    app.logger.info(
-        "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
-    product = Product.find_or_404(product_id)
-    product.purchased = True
-    product.save()
-    # wishlist = Wishlist.find_or_404(wishlist_id)
-    # results = [product.serialize() for product in wishlist.products]
-    # if product.purchased == True :
-    #     return make_response(jsonify(results), status.HTTP_400_BAD_REQUEST)
-    app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
-    return make_response(product.serialize(), status.HTTP_200_OK)
-
+    @api.doc('purchase_products')
+    @api.response(404, 'Product not found')
+    @api.response(409, 'The Product is not available for purchase')
+    @api.marshal_with(product_model)
+    def put(self, wishlist_id, product_id):
+        app.logger.info(
+            "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
+        product = Product.find(product_id)
+        if not product:
+            abort(status.HTTP_404_NOT_FOUND, 'Product with id [{}] was not found.'.format(product_id))
+        if product.purchased is True :
+            abort(status.HTTP_409_CONFLICT, 'Product with id [{}] is not available.'.format(product_id))
+        product.purchased = True
+        product.save()
+        app.logger.info("Item [%s] with in Wishlist with ID [%s] purchased.",product_id, wishlist_id)
+        return product.serialize(), status.HTTP_200_OK
 
 
 ######################################################################
