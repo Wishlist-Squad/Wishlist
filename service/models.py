@@ -104,7 +104,7 @@ class Product(db.Model, PersistentBase):
     id = db.Column(db.Integer, primary_key=True)
     wishlist_id = db.Column(
         db.Integer, db.ForeignKey('wishlist.id'), nullable=False)
-    product_id = db.Column(db.Integer)
+    item_id = db.Column(db.Integer)
     name = db.Column(db.String(128))
     purchased = db.Column(db.Boolean, default=False)
 
@@ -116,7 +116,7 @@ class Product(db.Model, PersistentBase):
         return {
             "id": self.id,
             "wishlist_id": self.wishlist_id,
-            "product_id": self.product_id,
+            "item_id": self.item_id,
             "name": self.name,
             "purchased": self.purchased
         }
@@ -129,7 +129,7 @@ class Product(db.Model, PersistentBase):
         """
         try:
             self.wishlist_id = data["wishlist_id"]
-            self.product_id = data["product_id"]
+            self.item_id = data["item_id"]
             self.name = data["name"]
             self.purchased = data["purchased"]
         except KeyError as error:

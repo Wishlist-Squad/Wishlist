@@ -296,7 +296,7 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_201_CREATED)
         data = resp.get_json()
         logging.debug(data)
-        self.assertEqual(data["product_id"], product.product_id)
+        self.assertEqual(data["item_id"], product.item_id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], test_wishlist.id)
 
@@ -325,7 +325,8 @@ class TestWishlistsServer(unittest.TestCase):
         self.assertEqual(resp.status_code, status.HTTP_200_OK)
 
         data = resp.get_json()
-        self.assertEqual(data["product_id"], product.product_id)
+        print(data)
+        self.assertEqual(data["item_id"], product.item_id)
         self.assertEqual(data["name"], product.name)
         self.assertEqual(data["wishlist_id"], test_wishlist.id)
 

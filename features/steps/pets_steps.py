@@ -64,7 +64,7 @@ def step_impl(context):
         wishlist_id = wishlists[int(row['wishlist_index'])]["id"]
         data = {
             "wishlist_id": wishlist_id,
-            "product_id": row['product_id'],
+            "item_id": row['item_id'],
             "name": row['product_name'],
             "purchased": row["purchased"] in ["True", "true"]
             }
