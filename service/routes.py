@@ -380,7 +380,26 @@ class ProductsCollections(Resource):
 #     wishlist.save()
 #     message = product.serialize()
 #     return make_response(jsonify(message), status.HTTP_201_CREATED)
+######################################################################
+# LIST ITEMS OF A WISHLIST
+######################################################################
 
+    @api.doc('list_all_items')
+    @api.response(200, 'items listed')
+    def get(self, wishlist_id):
+        """Returns all of items of a wishlist"""
+        app.logger.info("Request for Wishlist Products...")
+        wishlist = Wishlist.find_or_404(wishlist_id)
+        results = [product.serialize() for product in wishlist.products]
+        return results, status.HTTP_200_OK
+#@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
+#def list_items_wishlists(wishlist_id):
+#    """Returns all of items of a wishlist"""
+#    app.logger.info("Request for Wishlist Products...")
+#    wishlist = Wishlist.find_or_404(wishlist_id)
+#    results = [product.serialize() for product in wishlist.products]
+#    return make_response(jsonify(results), status.HTTP_200_OK)
+        
 ######################################################################
 #  PATH: /wishlists/<wishlist_id>/items/<product_id>
 ######################################################################
@@ -422,6 +441,8 @@ class ProductsResource(Resource):
             product.delete()
         return make_response("", status.HTTP_204_NO_CONTENT)
 
+    
+
 # ######################################################################
 # # DELETE AN ITEM FROM WISHLIST
 # ######################################################################
@@ -456,18 +477,7 @@ class ProductsResource(Resource):
 #     message = product.serialize()
 #     return make_response(jsonify(message), status.HTTP_200_OK)
 
-######################################################################
-# LIST PRODUCTS OF A WISHLIST
-######################################################################
 
-
-@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
-def list_items_wishlists(wishlist_id):
-    """Returns all of items of a wishlist"""
-    app.logger.info("Request for Wishlist Products...")
-    wishlist = Wishlist.find_or_404(wishlist_id)
-    results = [product.serialize() for product in wishlist.products]
-    return make_response(jsonify(results), status.HTTP_200_OK)
 
 # ######################################################################
 # # PURCHASE AN ITEM FROM WISHLIST
