@@ -32,6 +32,10 @@ $(function () {
         $("#flash_message").append(message);
     }
 
+    function isPositiveInteger(s) {
+      return /^\+?[1-9][\d]*$/.test(s);
+    }
+
     // ****************************************
     // Create a Wishlist
     // ****************************************
@@ -40,6 +44,11 @@ $(function () {
 
         var name = $("#wishlist_name").val();
         var customer_id = $("#wishlist_customer_id").val();
+
+        if (!isPositiveInteger(customer_id)) {
+            flash_message(`Customer ID needs to be a positive integer`)
+            return
+        }
 
         var data = {
             "name": name,
@@ -76,6 +85,16 @@ $(function () {
         var name = $("#wishlist_name").val();
         var customer_id = $("#wishlist_customer_id").val();
 
+        if (!isPositiveInteger(customer_id)) {
+            flash_message(`Customer ID needs to be a positive integer`)
+            return
+        }
+
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
         var data = {
             "name": name,
             "customer_id": customer_id,
@@ -109,6 +128,11 @@ $(function () {
 
         var wishlist_id = $("#wishlist_id").val();
 
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
         var ajax = $.ajax({
             type: "GET",
             url: "/wishlists/" + wishlist_id,
@@ -137,6 +161,11 @@ $(function () {
     $("#delete-btn").click(function () {
 
         var wishlist_id = $("#wishlist_id").val();
+
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
 
         var ajax = $.ajax({
             type: "DELETE",
@@ -171,6 +200,11 @@ $(function () {
 
         // var name = $("#wishlist_name").val();
         var customer_id = $("#wishlist_customer_id").val();
+
+        if (!isPositiveInteger(customer_id)) {
+            flash_message(`Customer ID needs to be a positive integer`)
+            return
+        }
 
         var queryString = ""
 
@@ -316,6 +350,16 @@ $(function () {
         var item_id = $("#item_item_id").val();
         var name = $("#item_product_name").val();
 
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
+        if (!isPositiveInteger(item_id)) {
+            flash_message(`Item ID needs to be a positive integer`)
+            return
+        }
+
         var data = {
             wishlist_id,
             item_id,
@@ -350,6 +394,16 @@ $(function () {
         var item_id = $("#item_id").val();
         var wishlist_id = $("#item_wishlist_id").val();
 
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
+        if (!isPositiveInteger(item_id)) {
+            flash_message(`Item ID needs to be a positive integer`)
+            return
+        }
+
         var ajax = $.ajax({
             type: "GET",
             url: `/wishlists/${wishlist_id}/items/${item_id}`,
@@ -379,6 +433,11 @@ $(function () {
 
         // var name = $("#wishlist_name").val();
         var wishlist_id = $("#item_wishlist_id").val();
+
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
 
         var ajax = $.ajax({
             type: "GET",
@@ -435,6 +494,16 @@ $(function () {
         var item_id = $("#item_id").val();
         var wishlist_id = $("#item_wishlist_id").val();
 
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
+        if (!isPositiveInteger(item_id)) {
+            flash_message(`Item ID needs to be a positive integer`)
+            return
+        }
+
         var ajax = $.ajax({
             type: "DELETE",
             url: `/wishlists/${wishlist_id}/items/${item_id}`,
@@ -460,6 +529,16 @@ $(function () {
 
         var item_id = $("#item_id").val();
         var wishlist_id = $("#item_wishlist_id").val();
+
+        if (!isPositiveInteger(wishlist_id)) {
+            flash_message(`Wishlist ID needs to be a positive integer`)
+            return
+        }
+
+        if (!isPositiveInteger(item_id)) {
+            flash_message(`Item ID needs to be a positive integer`)
+            return
+        }
 
         var ajax = $.ajax({
             type: "PUT",
