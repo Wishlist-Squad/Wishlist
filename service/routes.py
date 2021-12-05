@@ -370,6 +370,15 @@ class ProductsCollections(Resource):
         location_url = api.url_for(ProductsResource, wishlist_id =wishlist_id, product_id=product.id, _external=True)
         return product.serialize(), status.HTTP_201_CREATED, {'Location': location_url}
 
+    @api.doc('list_products')
+    @api.marshal_list_with(product_model)
+    def get(self, wishlist_id):
+        """Returns all of items of a wishlist"""
+        app.logger.info("Request for Wishlist Products...")
+        wishlist = Wishlist.find_or_404(wishlist_id)
+        results = [product.serialize() for product in wishlist.products]
+        return results, status.HTTP_200_OK
+
 ######################################################################
 #  PATH: /wishlists/<wishlist_id>/items/<product_id>
 ######################################################################
@@ -445,18 +454,6 @@ class ProductsResource(Resource):
 #     message = product.serialize()
 #     return make_response(jsonify(message), status.HTTP_200_OK)
 
-######################################################################
-# LIST PRODUCTS OF A WISHLIST
-######################################################################
-
-
-@app.route('/wishlists/<int:wishlist_id>/items', methods=['GET'])
-def list_items_wishlists(wishlist_id):
-    """Returns all of items of a wishlist"""
-    app.logger.info("Request for Wishlist Products...")
-    wishlist = Wishlist.find_or_404(wishlist_id)
-    results = [product.serialize() for product in wishlist.products]
-    return make_response(jsonify(results), status.HTTP_200_OK)
 
 # ######################################################################
 # # Path: /wishlists/wishlist_id/items/product_id/purchase
@@ -474,6 +471,9 @@ class PurchaseResource(Resource):
     @api.response(409, 'The Product is not available for purchase')
     @api.marshal_with(product_model)
     def put(self, wishlist_id, product_id):
+        """
+        Purchase an Product
+        """
         app.logger.info(
             "Request to purchase product with id: %s from wishlist with id: %s", product_id, wishlist_id)
         product = Product.find(product_id)
