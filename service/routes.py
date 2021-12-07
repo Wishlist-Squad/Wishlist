@@ -467,7 +467,7 @@ class ProductsResource(Resource):
 
 
 # ######################################################################
-# # Path: /wishlists/wishlist_id/items/product_id/purchase
+# # Path: /wishlists/wishlist_id/items/item_id/purchase
 # ######################################################################
 
 @api.route('/wishlists/<wishlist_id>/items/<item_id>/purchase')
