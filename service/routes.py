@@ -260,10 +260,6 @@ class WishlistCollection(Resource):
         wishlist = Wishlist()
         app.logger.debug('Payload = %s', api.payload)
         wishlist.deserialize(api.payload)
-        if not wishlist.customer_id.isnumeric():
-            abort(status.HTTP_400_BAD_REQUEST, "Customer ID needs to be a positive integer.")
-        if int(wishlist.customer_id) < 0:
-            abort(status.HTTP_400_BAD_REQUEST, "Customer ID needs to be a positive integer.")
         wishlist.create()
         app.logger.info('Wishlist with new id [%s] created!', wishlist.id)
         location_url = api.url_for(WishlistResource, wishlist_id=wishlist.id, _external=True)
