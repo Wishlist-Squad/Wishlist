@@ -143,6 +143,7 @@ Feature: The wishlist service back-end
         When I copy the "Id" field
         And I paste the "wishlist_id" field in the item form
         And I press the "Search" button in the item form
+        Then I should see the message "Success Search Item"
         Then I should see "1" in the "item_id" field in the item form
         And I should see "iphone" in the "product_name" field in the item form
 
