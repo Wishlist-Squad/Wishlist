@@ -68,7 +68,6 @@ api = Api(app,
 
 # Define the model so that the docs reflect what can be sent
 create_product_model = api.model('Product', {
-    'wishlist_id': fields.Integer(required=True, description="The wishlist this item belongs to"),
     'item_id': fields.Integer(required=True, description="The ID of the product"),
     "name": fields.String(required=True, description="The name of the product")
 })
@@ -77,6 +76,7 @@ product_model = api.inherit(
     'ProductModel',
     create_product_model,
     {
+        'wishlist_id': fields.Integer(required=True, description="The wishlist this item belongs to"),
         'id': fields.Integer(readOnly=True, description="The unique id assigned to each item in a wishlist"),
         "purchased": fields.Boolean(required=False, description="Whether this item was purchased off of this wishlist") 
     }
