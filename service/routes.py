@@ -105,22 +105,22 @@ wishlist_args.add_argument('customer_id', type=int, location="args", required=Fa
 ######################################################################
 # Special Error Handlers
 ######################################################################
-@api.errorhandler(DataValidationError)
-def request_validation_error(error):
-    """ Handles Value Errors from bad data """
-    message = str(error)
-    app.logger.error(message)
-    return {
-        'status_code': status.HTTP_400_BAD_REQUEST,
-        'error': 'Bad Request',
-        'message': message
-    }, status.HTTP_400_BAD_REQUEST
+# @api.errorhandler(DataValidationError)
+# def request_validation_error(error):
+#     """ Handles Value Errors from bad data """
+#     message = str(error)
+#     app.logger.error(message)
+#     return {
+#         'status_code': status.HTTP_400_BAD_REQUEST,
+#         'error': 'Bad Request',
+#         'message': message
+#     }, status.HTTP_400_BAD_REQUEST
 
 
 ######################################################################
 #  PATH: /wishlists/{id}
 ######################################################################
-@api.route('/wishlists/<wishlist_id>')
+@api.route('/wishlists/<int:wishlist_id>')
 @api.param('wishlist_id', 'The Wishlist identifier')
 class WishlistResource(Resource):
     """
@@ -157,7 +157,7 @@ class WishlistResource(Resource):
     @api.response(415, 'Unsupported media type')
     @api.response(404, 'Wishlist not found')
     @api.response(400, 'The posted Wishlist data was not valid')
-    @api.expect(wishlist_model)
+    @api.expect(wishlist_model, validate=True)
     @api.marshal_with(wishlist_model)
     def put(self, wishlist_id):
         """
@@ -239,7 +239,7 @@ class WishlistCollection(Resource):
     #------------------------------------------------------------------
     @api.doc('create_wishlists')
     @api.response(400, 'The posted data was not valid')
-    @api.expect(create_model)
+    @api.expect(create_model, validate=True)
     @api.marshal_with(wishlist_model, code=201)
     def post(self):
         """
@@ -343,7 +343,7 @@ class WishlistCollection(Resource):
 ######################################################################
 #  PATH: /wishlists/<wishlist_id>/items
 ######################################################################
-@api.route('/wishlists/<wishlist_id>/items')
+@api.route('/wishlists/<int:wishlist_id>/items')
 @api.param('wishlist_id', 'The Wishlist identifier')
 class ProductsCollections(Resource):
     """
@@ -352,19 +352,20 @@ class ProductsCollections(Resource):
     """
     @api.doc('create_products')
     @api.response(400, 'The posted data was not valid')
-    @api.expect(create_product_model)
+    @api.expect(create_product_model, validate=True)
     @api.marshal_with(product_model, code=201)
     def post(self,wishlist_id):
         # ADD A ITEM TO AN WISHLIST
         app.logger.info("Request to add an item to an wishlist")
         None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
         wishlist = Wishlist.find_or_404(wishlist_id)
-        app.logger.debug('Payload = %s', api.payload)
+        app.logger.info('Payload = %s', api.payload)
 
         product = Product()
+        api.payload['wishlist_id'] = wishlist_id
         product.deserialize(api.payload)
         product.wishlist_id = wishlist_id
-        product.purchased = False
+        # product.purchased = False
         product.create()
 
         wishlist.products.append(product)
@@ -479,7 +480,7 @@ class ProductsResource(Resource):
 # # Path: /wishlists/wishlist_id/items/item_id/purchase
 # ######################################################################
 
-@api.route('/wishlists/<wishlist_id>/items/<item_id>/purchase')
+@api.route('/wishlists/<int:wishlist_id>/items/<int:item_id>/purchase')
 @api.param('wishlist_id', 'The Wishlist identifier')
 @api.param('item_id', 'The Product identifier')
 class PurchaseResource(Resource):

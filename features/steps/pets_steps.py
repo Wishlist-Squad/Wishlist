@@ -43,7 +43,7 @@ def step_impl(context):
     for row in context.table:
         data = {
             "name": row['name'],
-            "customer_id": row['customer_id']
+            "customer_id": int(row['customer_id'])
             }
         payload = json.dumps(data)
         context.resp = requests.post(create_url, data=payload, headers=headers)
@@ -63,8 +63,8 @@ def step_impl(context):
     for row in context.table:
         wishlist_id = wishlists[int(row['wishlist_index'])]["id"]
         data = {
-            "wishlist_id": wishlist_id,
-            "item_id": row['item_id'],
+            "wishlist_id": int(wishlist_id),
+            "item_id": int(row['item_id']),
             "name": row['product_name'],
             "purchased": row["purchased"] in ["True", "true"]
             }

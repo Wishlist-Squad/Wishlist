@@ -50,7 +50,8 @@ $(function () {
 
     var data = {
       name: name,
-      customer_id: customer_id,
+
+      customer_id: parseInt(customer_id),
       products: [],
     }
 
@@ -93,7 +94,7 @@ $(function () {
 
     var data = {
       name: name,
-      customer_id: customer_id,
+      customer_id: parseInt(customer_id),
       products: [],
     }
 
@@ -347,10 +348,11 @@ $(function () {
       flash_message(`Item ID needs to be a positive integer`)
       return
     }
+    console.log(`item_id: ${item_id}`)
 
     var data = {
-      wishlist_id,
-      item_id,
+      wishlist_id: parseInt(wishlist_id),
+      item_id: parseInt(item_id),
       name,
       purchased: false,
     }
@@ -383,9 +385,11 @@ $(function () {
   $('#retrieve-item-btn').click(function () {
     var item_id = $('#item_id').val()
     var wishlist_id = $('#item_wishlist_id').val()
+
     $('#item_item_id').val('')
     $('#item_product_name').val('')
     $('#item_purchased').val('')
+
 
     if (!isPositiveInteger(wishlist_id)) {
       flash_message(`Wishlist ID needs to be a positive integer`)
