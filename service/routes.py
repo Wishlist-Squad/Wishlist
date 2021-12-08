@@ -105,16 +105,16 @@ wishlist_args.add_argument('customer_id', type=int, location="args", required=Fa
 ######################################################################
 # Special Error Handlers
 ######################################################################
-@api.errorhandler(DataValidationError)
-def request_validation_error(error):
-    """ Handles Value Errors from bad data """
-    message = str(error)
-    app.logger.error(message)
-    return {
-        'status_code': status.HTTP_400_BAD_REQUEST,
-        'error': 'Bad Request',
-        'message': message
-    }, status.HTTP_400_BAD_REQUEST
+# @api.errorhandler(DataValidationError)
+# def request_validation_error(error):
+#     """ Handles Value Errors from bad data """
+#     message = str(error)
+#     app.logger.error(message)
+#     return {
+#         'status_code': status.HTTP_400_BAD_REQUEST,
+#         'error': 'Bad Request',
+#         'message': message
+#     }, status.HTTP_400_BAD_REQUEST
 
 
 ######################################################################

@@ -288,19 +288,19 @@ class TestWishlist(unittest.TestCase):
         wishlist = Wishlist.find(wishlist.id)
         self.assertEqual(len(wishlist.products), 0)
 
-    def test_correct_type_or_400(self):
-        """ Correct or throw 400 error """
-        wishlist = self._create_wishlist()
-        wishlist.create()
-        # Assert that it was assigned an id and shows up in the database
-        self.assertEqual(wishlist.id, 1)
+    # def test_correct_type_or_400(self):
+    #     """ Correct or throw 400 error """
+    #     wishlist = self._create_wishlist()
+    #     wishlist.create()
+    #     # Assert that it was assigned an id and shows up in the database
+    #     self.assertEqual(wishlist.id, 1)
 
-        # Fetch it back
-        flag = Wishlist.correct_type_or_400(wishlist.id)
-        self.assertEqual(True, flag)
+    #     # Fetch it back
+    #     flag = Wishlist.correct_type_or_400(wishlist.id)
+    #     self.assertEqual(True, flag)
 
-        flag = Wishlist.correct_type_or_400("apple")
-        self.assertEqual(False, flag)
+    #     flag = Wishlist.correct_type_or_400("apple")
+    #     self.assertEqual(False, flag)
 
-        flag = Wishlist.correct_type_or_400(-1)
-        self.assertEqual(False, flag)
+    #     flag = Wishlist.correct_type_or_400(-1)
+    #     self.assertEqual(False, flag)
