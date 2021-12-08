@@ -222,14 +222,13 @@ class TestWishlistsServer(unittest.TestCase):
     def test_update_bad_wishlist(self):
         """Attempt to update a non existant Wishlist"""
         test_wishlist = WishlistFactory()
+        
         resp = self.app.put(
             f"/wishlists/{99}",
-            json={},
+            json=test_wishlist.serialize(),
             content_type=CONTENT_TYPE_JSON,
         )
         self.assertEqual(resp.status_code, status.HTTP_404_NOT_FOUND)
-        print(resp.get_json()["message"])
-        self.assertEqual("404 Not Found: Wishlist with id '99' was not found." in resp.get_json()["message"], True)
 
 
 # DELETE
