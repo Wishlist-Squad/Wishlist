@@ -120,7 +120,7 @@ def request_validation_error(error):
 ######################################################################
 #  PATH: /wishlists/{id}
 ######################################################################
-@api.route('/wishlists/<wishlist_id>')
+@api.route('/wishlists/<int:wishlist_id>')
 @api.param('wishlist_id', 'The Wishlist identifier')
 class WishlistResource(Resource):
     """
@@ -157,7 +157,7 @@ class WishlistResource(Resource):
     @api.response(415, 'Unsupported media type')
     @api.response(404, 'Wishlist not found')
     @api.response(400, 'The posted Wishlist data was not valid')
-    @api.expect(wishlist_model)
+    @api.expect(wishlist_model, validate=True)
     @api.marshal_with(wishlist_model)
     def put(self, wishlist_id):
         """
@@ -166,7 +166,6 @@ class WishlistResource(Resource):
         This endpoint will update a Wishlist based the body that is posted
         """
         app.logger.info('Request to Update a wishlist with id [%s]', wishlist_id)
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
         check_content_type("application/json")
         wishlist = Wishlist.find(wishlist_id)
         if not wishlist:
@@ -195,7 +194,6 @@ class WishlistResource(Resource):
         This endpoint will delete a Wishlist based the id specified in the path
         """
         app.logger.info('Request to Delete a wishlist with id [%s]', wishlist_id)
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
         wishlist = Wishlist.find(wishlist_id)
         if wishlist:
             wishlist.delete()
@@ -239,7 +237,7 @@ class WishlistCollection(Resource):
     #------------------------------------------------------------------
     @api.doc('create_wishlists')
     @api.response(400, 'The posted data was not valid')
-    @api.expect(create_model)
+    @api.expect(create_model, validate=True)
     @api.marshal_with(wishlist_model, code=201)
     def post(self):
         """
@@ -250,7 +248,6 @@ class WishlistCollection(Resource):
         wishlist = Wishlist()
         app.logger.debug('Payload = %s', api.payload)
         wishlist.deserialize(api.payload)
-        None if Wishlist.correct_type_or_400(wishlist.customer_id) else abort(status.HTTP_400_BAD_REQUEST, "Customer ID needs to be a positive integer.")
         wishlist.create()
         app.logger.info('Wishlist with new id [%s] created!', wishlist.id)
         location_url = api.url_for(WishlistResource, wishlist_id=wishlist.id, _external=True)
@@ -343,7 +340,7 @@ class WishlistCollection(Resource):
 ######################################################################
 #  PATH: /wishlists/<wishlist_id>/items
 ######################################################################
-@api.route('/wishlists/<wishlist_id>/items')
+@api.route('/wishlists/<int:wishlist_id>/items')
 @api.param('wishlist_id', 'The Wishlist identifier')
 class ProductsCollections(Resource):
     """
@@ -352,19 +349,19 @@ class ProductsCollections(Resource):
     """
     @api.doc('create_products')
     @api.response(400, 'The posted data was not valid')
-    @api.expect(create_product_model)
+    @api.expect(create_product_model, validate=True)
     @api.marshal_with(product_model, code=201)
     def post(self,wishlist_id):
         # ADD A ITEM TO AN WISHLIST
         app.logger.info("Request to add an item to an wishlist")
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
         wishlist = Wishlist.find_or_404(wishlist_id)
-        app.logger.debug('Payload = %s', api.payload)
+        app.logger.info('Payload = %s', api.payload)
 
         product = Product()
+        api.payload['wishlist_id'] = wishlist_id
         product.deserialize(api.payload)
         product.wishlist_id = wishlist_id
-        product.purchased = False
+        # product.purchased = False
         product.create()
 
         wishlist.products.append(product)
@@ -380,7 +377,6 @@ class ProductsCollections(Resource):
     def get(self, wishlist_id):
         """Returns all of items of a wishlist"""
         app.logger.info("Request for Wishlist Products...")
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
         wishlist = Wishlist.find_or_404(wishlist_id)
         results = [product.serialize() for product in wishlist.products]
         return results, status.HTTP_200_OK
@@ -416,8 +412,6 @@ class ProductsResource(Resource):
         """
         app.logger.info(
             "Request to get an item with id: %s from wishlist with id: %s", item_id, wishlist_id)
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
-        None if Wishlist.correct_type_or_400(item_id) else abort(status.HTTP_400_BAD_REQUEST, "item ID needs to be a positive integer.")
         wishlist = Wishlist.find_or_404(wishlist_id)
         product = Product.find_or_404(item_id)
         return product.serialize(), status.HTTP_200_OK
@@ -430,8 +424,6 @@ class ProductsResource(Resource):
         """
         app.logger.info(
             "Request to delete product with id: %s from wishlist with id: %s", item_id, wishlist_id)
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
-        None if Wishlist.correct_type_or_400(item_id) else abort(status.HTTP_400_BAD_REQUEST, "item ID needs to be a positive integer.")
         product = Product.find(item_id)
         if product:
             product.delete()
@@ -479,7 +471,7 @@ class ProductsResource(Resource):
 # # Path: /wishlists/wishlist_id/items/item_id/purchase
 # ######################################################################
 
-@api.route('/wishlists/<wishlist_id>/items/<item_id>/purchase')
+@api.route('/wishlists/<int:wishlist_id>/items/<int:item_id>/purchase')
 @api.param('wishlist_id', 'The Wishlist identifier')
 @api.param('item_id', 'The Product identifier')
 class PurchaseResource(Resource):
@@ -495,8 +487,6 @@ class PurchaseResource(Resource):
     def put(self, wishlist_id, item_id):
         app.logger.info(
             "Request to purchase product with id: %s from wishlist with id: %s", item_id, wishlist_id)
-        None if Wishlist.correct_type_or_400(wishlist_id) else abort(status.HTTP_400_BAD_REQUEST, "Wishlist ID needs to be a positive integer.")
-        None if Wishlist.correct_type_or_400(item_id) else abort(status.HTTP_400_BAD_REQUEST, "item ID needs to be a positive integer.")
         product = Product.find(item_id)
         if not product:
             abort(status.HTTP_404_NOT_FOUND, 'Product with id [{}] was not found.'.format(item_id))
