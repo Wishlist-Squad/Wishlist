@@ -92,6 +92,8 @@ class PersistentBase():
         return cls.query.get_or_404(by_id)
 
 
+
+
 ######################################################################
 #  P R O D U C T   M O D E L
 ######################################################################
@@ -220,3 +222,13 @@ class Wishlist(db.Model, PersistentBase):
         """
         logger.info(f"Finding Wishlists for customer: {customer_id}")
         return cls.query.filter(cls.customer_id == customer_id)
+
+    @classmethod
+    def correct_type_or_400(self, field):
+        if isinstance(field, int) and field >= 0:
+            return True
+        if isinstance(field, str) and field.isnumeric():
+            if int(field) >= 0: 
+                return True
+        else:
+             return False
