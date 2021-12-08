@@ -50,7 +50,7 @@ $(function () {
 
     var data = {
       name: name,
-      customer_id: customer_id,
+      customer_id: parseInt(customer_id),
       products: [],
     }
 
@@ -93,7 +93,7 @@ $(function () {
 
     var data = {
       name: name,
-      customer_id: customer_id,
+      customer_id: parseInt(customer_id),
       products: [],
     }
 
@@ -347,10 +347,11 @@ $(function () {
       flash_message(`Item ID needs to be a positive integer`)
       return
     }
+    console.log(`item_id: ${item_id}`)
 
     var data = {
-      wishlist_id,
-      item_id,
+      wishlist_id: parseInt(wishlist_id),
+      item_id: parseInt(item_id),
       name,
       purchased: false,
     }
