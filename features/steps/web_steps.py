@@ -187,11 +187,13 @@ def step_impl(context):
 @then('I should see "{text_string}" in the "{element_name}" field in the item form')
 def step_impl(context, text_string, element_name):
     element_id = SUB_ID_PREFIX + element_name.lower()
-    element = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
-        expected_conditions.presence_of_element_located((By.ID, element_id))
+    found = WebDriverWait(context.driver, context.WAIT_SECONDS).until(
+        expected_conditions.text_to_be_present_in_element_value(
+            (By.ID, element_id),
+            text_string
+        )
     )
-    value = element.get_attribute('value')
-    expect(value == text_string).to_be(True)
+    expect(found).to_be(True)
 
 '''
 @when('I set the "{element_name}" to "{text_string}"')
