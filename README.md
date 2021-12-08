@@ -1,6 +1,7 @@
 # Wishlist Microservice
 
 [![Build Status](https://github.com/Wishlist-Squad/wishlists/actions/workflows/python.yml/badge.svg)](https://github.com/Wishlist-Squad/wishlists/actions/workflows/python.yml)
+[![BDD Tests](https://github.com/Wishlist-Squad/wishlists/actions/workflows/bdd-test.yml/badge.svg)](https://github.com/Wishlist-Squad/wishlists/actions/workflows/bdd-test.yml)
 [![codecov](https://codecov.io/gh/Wishlist-Squad/wishlists/branch/main/graph/badge.svg?token=WSM2E1CI2D)](https://codecov.io/gh/Wishlist-Squad/wishlists)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0)
 
